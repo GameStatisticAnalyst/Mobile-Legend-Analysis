@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function index() {
+export default function Login() {
   return (
     <div>
-      test
+      Login Page
     </div>
   )
 }
