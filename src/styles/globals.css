@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* body {
+  font-family: "Poppins", sans-serif;
+} */
+
+@layer base {
+  body {
+    @apply bg-white text-black dark:bg-gray-900 dark:text-white;
+  }
+}
+
+@media (min-width: 768px) {
+  .wave-divider svg {
+    height: 150px;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* :root {
+  --orange: #f65000;
+  --bg-light: #e8dfca;
+  --text-color: #333;
+  --font-size: 18px;
+  --text-spacing: 20px;
+} */
