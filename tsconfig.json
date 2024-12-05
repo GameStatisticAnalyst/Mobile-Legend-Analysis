@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true, // Melewati pemeriksaan tipe pada file deklarasi
+    // "strict": false, // Menonaktifkan mode strict
+    "strict": true, // Menonaktifkan mode strict
+    "noImplicitAny": false, // Mengizinkan penggunaan tipe `any` yang tidak jelas
+    "strictNullChecks": false, // Menonaktifkan pemeriksaan null dan undefined
+    "noImplicitThis": false, // Mengizinkan penggunaan `this` yang tidak jelas
+    "strictFunctionTypes": false, // Menonaktifkan pemeriksaan tipe fungsi yang ketat
+    "strictPropertyInitialization": false, // Mengizinkan properti yang tidak diinisialisasi di kelas
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    // "target": "es5",
+    "incremental": true,
+    "baseUrl": ".",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "target": "ES2017"
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "./src", "src", "../lib/src", "."],
+  "exclude": ["node_modules"]
+}
