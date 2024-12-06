@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import ProtectedPages from "./config/ProtectedKelbuk";
 import React, { lazy } from "react";
 
 const Page = lazy(() => import("./pages/Page"));
