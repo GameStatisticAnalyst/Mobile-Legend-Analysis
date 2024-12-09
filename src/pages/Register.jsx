@@ -1,18 +1,21 @@
 // pages/register.js
 import FormCard from "../components/FormCard";
 
+import DefaultTemplate from "@/layout/defaultLayout";
+
 export default function RegisterPage() {
   return (
-    <div className="relative h-screen flex items-center justify-center">
+    <DefaultTemplate>
+    <div className="relative h-full flex items-center justify-center">
       {/* Background SVG */}
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0 z-5">
         {[...Array(20)].map((_, i) => (
           <svg
             key={i}
             className="absolute opacity-70"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 90}%`,
+              left: `${Math.random() * 90}%`,
               transform: `rotate(${Math.random() * 360}deg)`,
             }}
             width="80"
@@ -66,5 +69,6 @@ export default function RegisterPage() {
         </p>
       </FormCard>
     </div>
+    </DefaultTemplate>
   );
 }

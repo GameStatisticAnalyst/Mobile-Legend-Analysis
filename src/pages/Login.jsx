@@ -1,18 +1,21 @@
-// pages/login.js
+// pages/register.js
 import FormCard from "../components/FormCard";
 
-export default function LoginPage() {
+import DefaultTemplate from "@/layout/defaultLayout";
+
+export default function RegisterPage() {
   return (
-    <div className="relative h-screen flex items-center justify-center bg-transparent ">
+    <DefaultTemplate>
+    <div className="relative h-full flex items-center justify-center">
       {/* Background SVG */}
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0 z-5">
         {[...Array(20)].map((_, i) => (
           <svg
             key={i}
             className="absolute opacity-70"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 90}%`,
+              left: `${Math.random() * 90}%`,
               transform: `rotate(${Math.random() * 360}deg)`,
             }}
             width="80"
@@ -27,34 +30,45 @@ export default function LoginPage() {
 
       {/* Form */}
       <FormCard
-        title="Login to Your Account"
-        description="Please login to continue to your dashboard."
+        title="Create an Account"
+        description="Please register to get started with your account."
       >
         <form className="space-y-4">
           <input
+            type="text"
+            placeholder="Username"
+            className="w-full px-4 py-2 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
             type="email"
             placeholder="Email"
-            className="w-full px-4 py-2 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-green-500"
           />
           <input
             type="password"
             placeholder="Password"
-            className="w-full px-4 py-2 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            className="w-full px-4 py-2 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-green-500"
           />
           <button
             type="submit"
-            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md"
+            className="w-full py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-md"
           >
             Login
           </button>
         </form>
         <p className="text-gray-600 dark:text-gray-300 mt-4 text-sm">
           Don't have an account?{" "}
-          <a href="/register" className="text-blue-500 hover:underline">
+          <a href="/register" className="text-green-500 hover:underline">
             Register
           </a>
         </p>
       </FormCard>
     </div>
+    </DefaultTemplate>
   );
 }

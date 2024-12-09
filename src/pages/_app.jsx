@@ -1,8 +1,4 @@
-// import "@/styles/globals.css"
 import "@/styles/globals.css"
-import { ReactElement, ReactNode } from "react"
-import { NextPage } from "next"
-import { AppProps } from "next/app"
 import { Roboto, Inter, Poppins, Montserrat, Raleway } from "next/font/google"
 
 const roboto = Roboto({
