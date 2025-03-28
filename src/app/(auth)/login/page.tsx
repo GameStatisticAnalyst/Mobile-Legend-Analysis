@@ -11,8 +11,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { EyeIcon, EyeOffIcon, Facebook } from "lucide-react"
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [showPassword, setShowPassword] = useState(false)
+    const router = useRouter()
+    const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -102,7 +102,7 @@ export default function LoginPage() {
                 <div className="w-full border-t border-muted"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                <span className="bg-white px-2 text-muted-foreground">Or continue with</span>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -125,7 +125,7 @@ export default function LoginPage() {
                 Google
               </Button>
               <Button variant="outline" className="w-full">
-                <Facebook className="mr-2 h-4 w-4" />
+                  <Facebook className="mr-2 h-4 w-4" />
                 Facebook
               </Button>
             </div>
