@@ -10,6 +10,6 @@ const config: Config = {
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 }
 export default config
