@@ -1,0 +1,55 @@
+import type { AdminAnalysis } from "@/types/admin"
+
+// Dummy data
+export const Analyses: AdminAnalysis[] = [
+  {
+    id: "1",
+    date: "2024-02-09",
+    teamA: "ONIC",
+    teamB: "RRQ",
+    description: "Final match between ONIC and RRQ in MPL Season 11",
+    tags: ["MPL", "Final", "Season 11"],
+    createdBy: "MLAnalyst",
+    status: "published",
+  },
+  {
+    id: "2",
+    date: "2024-02-08",
+    teamA: "EVOS",
+    teamB: "Alter Ego",
+    description: "Semi-final match of MDL Season 5",
+    tags: ["MDL", "Semi-Final", "Season 5"],
+    createdBy: "ProAnalyst",
+    status: "published",
+  },
+  {
+    id: "3",
+    date: "2024-02-07",
+    teamA: "Aura",
+    teamB: "Geek Fam",
+    description: "Regular season match with unexpected strategies",
+    tags: ["MPL", "Regular Season", "Meta Analysis"],
+    createdBy: "MetaExpert",
+    status: "draft",
+  },
+  {
+    id: "4",
+    date: "2024-02-06",
+    teamA: "Bigetron",
+    teamB: "ONIC",
+    description: "Week 3 match of MPL Season 11",
+    tags: ["MPL", "Regular Season", "Season 11"],
+    createdBy: "MLAnalyst",
+    status: "published",
+  },
+  {
+    id: "5",
+    date: "2024-02-05",
+    teamA: "RRQ",
+    teamB: "EVOS",
+    description: "Classic rivalry match in MPL Season 11",
+    tags: ["MPL", "Regular Season", "Rivalry"],
+    createdBy: "ProAnalyst",
+    status: "published",
+  },
+]
