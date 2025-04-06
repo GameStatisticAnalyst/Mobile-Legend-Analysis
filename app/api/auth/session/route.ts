@@ -1,27 +1,35 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { JwtPayload } from "jsonwebtoken";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
-interface SessionResponse {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  } | null;
+interface SessionUser {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  role?: string | null;
 }
 
-export async function GET(
-  req: Request
-): Promise<NextResponse<SessionResponse>> {
-  const user: JwtPayload | null = await getCurrentUser();
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
 
-  if (!user) {
-    return NextResponse.json({ user: null }, { status: 401 });
+    if (!session?.user) {
+      return NextResponse.json({ user: null }, { status: 401 });
+    }
+
+    const userData: SessionUser = {
+      id: session.user.id,
+      name: session.user.name,
+      email: session.user.email,
+      role: (session.user as any).role,
+    };
+
+    return NextResponse.json({ user: userData });
+  } catch (error) {
+    console.error("Session error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({
-    user: user && typeof user === "object" && "id" in user && "name" in user && "email" in user
-      ? { id: user.id as string, name: user.name as string, email: user.email as string }
-      : null,
-  });
 }

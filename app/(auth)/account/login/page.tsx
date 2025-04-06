@@ -2,20 +2,17 @@
 import anime from "animejs";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { useState, useEffect, ReactElement } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { EyeIcon, EyeOffIcon, Facebook, AlertCircle } from "lucide-react";
+import { EyeIcon, EyeOffIcon, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Label from "@/components/ui/label";
 import Checkbox from "@/components/ui/checkbox";
-import {
-  AlertDialog,
-  AlertDialogDescription,
-} from "@/components/ui/alert-dialog";
 
-export default function LoginPage(): ReactElement {
+export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +23,8 @@ export default function LoginPage(): ReactElement {
     rememberMe: false,
   });
 
-  useEffect((): void => {
+  // Animation on mount
+  useEffect(() => {
     anime({
       targets: ".form-element",
       opacity: [0, 1],
@@ -40,6 +38,7 @@ export default function LoginPage(): ReactElement {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (error) setError(""); // Clear error when user types
   };
 
   const handleCheckboxChange = (checked: boolean) => {
@@ -49,65 +48,68 @@ export default function LoginPage(): ReactElement {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Basic validation
+    if (!formData.email || !formData.password) {
+      setError("Email and password are required");
+      return;
+    }
+
     setLoading(true);
-    anime({
-      targets: ".submit-button",
-      scale: [1, 0.95, 1],
-      duration: 400,
-      easing: "easeInOutQuad",
-    });
 
     try {
+      // Button press animation
+      anime({
+        targets: ".submit-button",
+        scale: [1, 0.95, 1],
+        duration: 400,
+        easing: "easeInOutQuad",
+      });
+
+      // Sign in with credentials
       const result = await signIn("credentials", {
         redirect: false,
         email: formData.email,
         password: formData.password,
+        callbackUrl: "/dashboard",
       });
 
       if (result?.error) {
-        setError("Login gagal. Periksa kembali email dan password Anda.");
+        setError(result.error);
+        toast.error("Login failed", {
+          description: result.error,
+        });
       } else {
-        router.push("/dashboard"); // Redirect ke dashboard setelah login sukses
+        toast.success("Login successful");
+        router.push(result?.url || "/dashboard");
       }
-      // const res = await fetch("/api/auth/login", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({
-      //     email: formData.email,
-      //     password: formData.password,
-      //   }),
-      // });
-
-      // console.log(`${res.status} ${res.statusText}`);
-
-      // if (res.ok) {
-      //   router.push("/dashboard");
-      // } else {
-      //   const data = await res.json();
-      //   setError(data?.error || "Login gagal");
-      // }
     } catch (err: any) {
-      alert(error);
+      setError(err.message || "Login failed");
+      toast.error("Login failed", {
+        description: err.message || "An unexpected error occurred",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md space-y-6 ">
+    <div className="w-full max-w-md space-y-6">
       <div className="text-center form-element">
-        <h1 className="text-3xl font-bold tracking-tight">Masuk</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Sign In</h1>
         <p className="mt-2 text-muted-foreground">
-          Masukkan kredensial Anda untuk mengakses akun
+          Enter your credentials to access your account
         </p>
       </div>
 
-      {/* {error && (
-        <AlertDialog>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDialogDescription>{error}</AlertDialogDescription>
-        </AlertDialog>
-      )} */}
+      {error && (
+        <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 flex items-start gap-3 form-element">
+          <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+          <div>
+            <p className="font-medium">Login failed</p>
+            <p className="text-sm">{error}</p>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-2 form-element">
@@ -135,7 +137,7 @@ export default function LoginPage(): ReactElement {
               id="email"
               name="email"
               type="email"
-              placeholder="nama@example.com"
+              placeholder="your@email.com"
               required
               value={formData.email}
               onChange={handleChange}
@@ -154,7 +156,7 @@ export default function LoginPage(): ReactElement {
               href="/account/recovery"
               className="text-sm text-blue-500 hover:underline"
             >
-              Lupa password?
+              Forgot password?
             </Link>
           </div>
           <div className="relative">
@@ -216,7 +218,7 @@ export default function LoginPage(): ReactElement {
             htmlFor="remember"
             className="text-sm font-normal cursor-pointer"
           >
-            Ingat saya selama 30 hari
+            Remember me for 30 days
           </Label>
         </div>
 
@@ -225,65 +227,49 @@ export default function LoginPage(): ReactElement {
           className="w-full py-6 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium submit-button form-element"
           disabled={loading}
         >
-          {loading ? "Sedang Masuk..." : "Masuk"}
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Signing in...
+            </span>
+          ) : (
+            "Sign In"
+          )}
         </Button>
-
-        {/* <div className="relative my-6 form-element">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-200 dark:border-slate-700"></div>
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white dark:bg-slate-900 px-2 text-muted-foreground">Atau lanjutkan dengan</span>
-          </div>
-        </div> */}
-
-        {/* <div className="grid grid-cols-2 gap-4 form-element">
-          <Button 
-            variant="outline" 
-            className="w-full rounded-xl border-slate-200 dark:border-slate-700 py-6 hover:bg-slate-100 dark:hover:bg-slate-800"
-            // disabled={loading}
-          >
-            <svg
-              className="mr-2 h-5 w-5 text-red-500"
-              aria-hidden="true"
-              focusable="false"
-              data-prefix="fab"
-              data-icon="google"
-              role="img"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 488 512"
-            >
-              <path
-                fill="currentColor"
-                d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-              ></path>
-            </svg>
-            Google
-          </Button>
-          <Button 
-            variant="outline" 
-            className="w-full rounded-xl border-slate-200 dark:border-slate-700 py-6 hover:bg-slate-100 dark:hover:bg-slate-800"
-            // disabled={loading}
-          >
-            <Facebook className="mr-2 h-5 w-5 text-blue-600" />
-            Facebook
-          </Button>
-        </div> */}
       </form>
 
       <div className="text-center text-sm form-element">
-        Belum punya akun?{" "}
+        Don't have an account?{" "}
         <Link
           href="/account/register"
           className="text-primary font-medium hover:underline"
         >
-          Daftar
+          Sign up
         </Link>
       </div>
 
       <div className="text-center mt-6 form-element">
         <Link
-          href="/account"
+          href="/"
           className="text-sm text-muted-foreground hover:text-primary flex items-center justify-center gap-1"
         >
           <svg
@@ -298,7 +284,7 @@ export default function LoginPage(): ReactElement {
           >
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          Kembali
+          Back to home
         </Link>
       </div>
     </div>
