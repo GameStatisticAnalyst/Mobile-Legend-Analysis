@@ -22,6 +22,7 @@ export default async function RootLayout({
   // if (session.user.role !== "admin") {
   //   redirect("/"); 
   // }
+  
   return (
     <html lang="en">
       <body>{children}</body>
