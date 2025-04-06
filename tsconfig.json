@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true, // Melewati pemeriksaan tipe pada file deklarasi
-    // "strict": false, // Menonaktifkan mode strict
-    "strict": true, // Menonaktifkan mode strict
-    "noImplicitAny": false, // Mengizinkan penggunaan tipe `any` yang tidak jelas
-    "strictNullChecks": false, // Menonaktifkan pemeriksaan null dan undefined
+    "strict": true, // mode strict
+    "noImplicitAny": true, // Mengizinkan penggunaan tipe `any` yang tidak jelas
+    "strictNullChecks": true, // pemeriksaan null dan undefined
     "noImplicitThis": false, // Mengizinkan penggunaan `this` yang tidak jelas
-    "strictFunctionTypes": false, // Menonaktifkan pemeriksaan tipe fungsi yang ketat
+    "strictFunctionTypes": false, // pemeriksaan tipe fungsi yang ketat
     "strictPropertyInitialization": false, // Mengizinkan properti yang tidak diinisialisasi di kelas
     "noEmit": true,
     "esModuleInterop": true,
@@ -26,11 +25,20 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
-
-    },
+      "@/*": ["./*"]
+    }
     // "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "./src", "src", "../lib/src", "."],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "./app",
+    "app",
+    "../lib/app",
+    "."
+  ],
+  "exclude": ["node_modules"],
+  "typeRoots": ["./types", "./node_modules/@types"]
 }
