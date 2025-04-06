@@ -110,11 +110,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/login",
+    signIn: "/account/login", 
+    signOut: "/",
+    error: "/account/error", 
+    verifyRequest: "/verify-request", 
+    newUser: "/dashboard",
   },
   session: {
     strategy: "jwt",
   },
+  // JWT TOKEN Handler
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -124,7 +129,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
+        session.user.id = token.id 
       }
       return session;
     },

@@ -46,6 +46,8 @@ export async function POST(req: Request): Promise<NextResponse> {
       { expiresIn: "1d" }
     );
 
+    console.log(token)
+
     const response = NextResponse.json(
       { message: "Login berhasil" },
       { status: 200 }

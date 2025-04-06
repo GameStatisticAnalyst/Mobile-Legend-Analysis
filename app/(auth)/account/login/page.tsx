@@ -58,23 +58,34 @@ export default function LoginPage(): ReactElement {
     });
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
       });
 
-      console.log(`${res.status} ${res.statusText}`);
-
-      if (res.ok) {
-        router.push("/dashboard"); 
+      if (result?.error) {
+        setError("Login gagal. Periksa kembali email dan password Anda.");
       } else {
-        const data = await res.json();
-        setError(data?.error || "Login gagal");
+        router.push("/dashboard"); // Redirect ke dashboard setelah login sukses
       }
+      // const res = await fetch("/api/auth/login", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({
+      //     email: formData.email,
+      //     password: formData.password,
+      //   }),
+      // });
+
+      // console.log(`${res.status} ${res.statusText}`);
+
+      // if (res.ok) {
+      //   router.push("/dashboard");
+      // } else {
+      //   const data = await res.json();
+      //   setError(data?.error || "Login gagal");
+      // }
     } catch (err: any) {
       alert(error);
     } finally {
