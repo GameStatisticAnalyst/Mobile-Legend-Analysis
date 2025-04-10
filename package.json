@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "next start",
-    "dev": "next dev",
+    "dev": "next dev & npx prisma generate",
     "build": "next build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

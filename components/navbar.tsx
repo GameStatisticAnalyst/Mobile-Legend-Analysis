@@ -60,13 +60,14 @@ export default function Navbar() {
   }, [mobileMenuOpen]);
 
   const isActive = (path: string) => pathname === path;
+  
   return (
     <header
-      className={`sticky top-0 z-50 w-full mx-auto px-13 transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full mx-auto md:px-13 lg:px-50 transition-all duration-300 ${
         scrolled ? " backdrop-blur-md shadow-sm" : "bg-transparent rounded"
       }`}
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div className="flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center space-x-2">
             {/* <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
@@ -93,8 +94,8 @@ export default function Navbar() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="hidden md:flex text-gray-700 dark:text-gray-300 relative w-60">
+        <div className="flex items-center gap-4 hidden md:flex">
+          <div className="hidden 2xl:flex text-gray-700 dark:text-gray-300 relative w-60">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <Search className="h-4 w-4 " />
             </div>
@@ -114,77 +115,75 @@ export default function Navbar() {
           </Button>
         </div>
 
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
-            >
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle Menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-full sm:w-[350px] pr-0">
-            <div className="flex items-center justify-between mb-6">
-              <Link
-                href="/"
-                className="flex items-center space-x-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                  <span className="text-white font-bold">ML</span>
-                </div>
-                <span className="font-bold text-xl">MLAnalysis</span>
-              </Link>
+        <div className="flex items-center md:hidden">
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger>
               <Button
                 variant="ghost"
-                size="icon"
-                onClick={() => setMobileMenuOpen(false)}
-                className="rounded-full"
+                className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
               >
-                <X className="h-5 w-5" />
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle Menu</span>
               </Button>
-            </div>
-            <div className="relative mb-6">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <Search className="h-4 w-4 text-muted-foreground" />
-              </div>
-              <Input
-                placeholder="Search analysis..."
-                className="pl-10 rounded-full border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
-              />
-            </div>
-            <nav className="flex flex-col space-y-1">
-              {MenuNav.map((items: menuProps) => (
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full sm:w-[350px] pr-5">
+              <div className="flex items-center justify-between mb-6">
                 <Link
-                  href={items.href}
-                  className={`mobile-menu-item px-4 py-3 rounded-xl transition-colors ${
-                    isActive(items.href)
-                      ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
-                      : "hover:bg-slate-100 dark:hover:bg-slate-800"
-                  }`}
-                  onClick={(): void => setMobileMenuOpen(false)}
+                  href="/"
+                  className="flex items-center space-x-2"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  {items.name}
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+                    <span className="text-white font-bold">ML</span>
+                  </div>
+                  <span className="font-bold text-xl">MLAnalysis</span>
                 </Link>
-              ))}
-            </nav>
-            <div className="flex items-center justify-between mt-4 mb-6">
-              <span className="text-sm text-muted-foreground">Theme</span>
-              {/* <ThemeToggle /> */}
-            </div>
-            <div className="border-t my-2"></div>
-            <div className="space-y-3 mt-6">
-              <Button
-                asChild
-                className="mobile-menu-item w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Link href="/account">Masuk</Link>
-              </Button>
-            </div>
-          </SheetContent>
-        </Sheet>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-full"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+              <div className="relative mb-6">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <Search className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <Input
+                  placeholder="Search analysis..."
+                  className="pl-10 rounded-full border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                />
+              </div>
+              <nav className="flex flex-col space-y-1">
+                {MenuNav.map((items: menuProps) => (
+                  <Link
+                    href={items.href}
+                    key={items.name}
+                    className={`mobile-menu-item z-50 py-3 rounded-xl transition-colors ${
+                      isActive(items.href)
+                        ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                        : "hover:bg-slate-100 dark:hover:bg-slate-800"
+                    }`}
+                    onClick={(): void => setMobileMenuOpen(false)}
+                  >
+                    {items.name}
+                  </Link>
+                ))}
+              </nav>
+              <div className="border-t my-2"></div>
+              <div className="space-y-3 mt-6">
+                <Button
+                  className="mobile-menu-item w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Link href="/account">Masuk</Link>
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
