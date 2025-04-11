@@ -1,6 +1,5 @@
 import type { ReactElement } from "react"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
+import MenuLayout from "@/layout/menu-layout"
 import { Shield, Clock, AlertCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
