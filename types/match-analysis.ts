@@ -5,7 +5,7 @@ export interface Hero {
   role: Role
 }
 
-export type Role = "mid-lane" | "gold-lane" | "exp-lane" | "roamer-lane" | "jungler-lane"
+// export type Role = "mid-lane" | "gold-lane" | "exp-lane" | "roamer-lane" | "jungler-lane"
 
 export interface Player {
   id: string
@@ -53,3 +53,12 @@ export interface MatchAnalysis {
   updatedAt: string
 }
 
+export interface EventType {
+  id: string;
+  name: string;
+}
+
+export interface Role {
+  id: string;
+  name: string;
+}

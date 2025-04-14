@@ -12,7 +12,7 @@ import Link from "next/link"
 // import authStore from "@/config/store/authStore"
 import navigation from "./admin-menu"
 import { ChevronLeft, Menu, Bell, Search, User, Settings, LogOut } from "lucide-react"
-import Avatar from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   DropdownMenu,

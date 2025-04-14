@@ -193,99 +193,6 @@ export default function Home(): ReactElement {
         </div>
       </section>
 
-      {/* Latest Analysis Section */}
-      {/* <section className="lg:px-8 py-12 relative overflow-hidden rounded">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 -z-10"></div>
-        <div className="absolute top-0 right-0 w-72 h-72 bg-blue-300/20 dark:bg-blue-600/10 rounded-full filter blur-3xl -z-10 transform translate-x-1/4 -translate-y-1/4"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-300/20 dark:bg-purple-600/10 rounded-full filter blur-3xl -z-10 transform -translate-x-1/4 translate-y-1/4"></div>
-
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col gap-8 animate-fade-in">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-              <div className="space-y-2">
-                <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-                  Analisis Terbaru
-                </h2>
-                <p className="text-xl text-gray-600 dark:text-gray-300">
-                  Jelajahi analisis pertandingan Mobile Legends terbaru
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <Badge
-                  variant="default"
-                  className="rounded-full px-3 py-1 bg-blue-600 text-white hover:bg-blue-700"
-                >
-                  #MPL
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className="rounded-full px-3 py-1 border-gray-300 dark:border-gray-600 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400"
-                >
-                  Final
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className="rounded-full px-3 py-1 border-gray-300 dark:border-gray-600 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400"
-                >
-                  MDL
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className="rounded-full px-3 py-1 border-gray-300 dark:border-gray-600 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400"
-                >
-                  Season 11
-                </Badge>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                  <Input
-                    placeholder="Cari analisis..."
-                    className="pl-9 rounded-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-                  />
-                </div>
-                <div className="flex items-center gap-4">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="rounded-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2"
-                  >
-                    <option value="latest">Terbaru</option>
-                    <option value="oldest">Terlama</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {analysisData.map((analysis) => (
-                <div key={analysis.id} className="group">
-                  <AnalysisCard
-                    analysis={analysis}
-                    onClick={handleAnalysisClick}
-                  />
-                  <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-blue-600 to-purple-600 mt-1 transition-all duration-300 rounded-full"></div>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex justify-center mt-8">
-              <Link
-                href="analysis"
-                className="border flex gap-3 dark:text-gray-300 border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-300 rounded-full px-8 py-6 dark:border-gray-600 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 bg-white dark:bg-gray-800"
-              >
-                <span className="mr-2">Lihat Semua Analisis</span>
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
       {/* Features Section */}
       <section className="py-12 bg-gradient-to-r from-blue-600/10 to-purple-600/10 backdrop-blur-md rounded text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4">
@@ -413,8 +320,8 @@ export default function Home(): ReactElement {
                         Dapatkan akses ke fitur premium dan komunitas eksklusif
                       </p>
                       <Button
-                        variant="default"
-                        className="rounded-full hover:bg-white/90 border border-white/20 text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4"
+                        variant="outline"
+                        // className="rounded-full hover:bg-white/90 border border-white/20 text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4"
                       >
                         Daftar Gratis
                       </Button>
@@ -428,9 +335,9 @@ export default function Home(): ReactElement {
                       </p>
                     </div>
                     <div className="bg-purple-100 dark:bg-purple-950/30 p-4 rounded-xl w-full">
-                      <h4 className="font-medium mb-2">Webinar</h4>
+                      <h4 className="font-medium mb-2">AI Tools</h4>
                       <p className="text-sm text-gray-600 dark:text-gray-300">
-                        Sesi belajar dengan analis profesional
+                        Analisis pertandingan menggunakan AI
                       </p>
                     </div>
                     <div className="bg-pink-100 dark:bg-pink-950/30 p-4 rounded-xl w-full">

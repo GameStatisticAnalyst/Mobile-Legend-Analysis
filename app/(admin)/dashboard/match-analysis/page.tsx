@@ -45,7 +45,7 @@ export default function MatchAnalysisListPage() {
         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
           Match Analyses
         </h1>
-        <Link href="/admin/match-analysis/new">
+        <Link href="/dashboard/match-analysis/new">
           <Button className="bg-gradient-to-r from-blue-600 to-purple-600">
             <Plus className="h-4 w-4 mr-2" />
             New Analysis
@@ -123,7 +123,9 @@ export default function MatchAnalysisListPage() {
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button variant="outline" size="icon" asChild>
-                            <Link href={`/dashboard/match-analysis/${analysis.id}`}>
+                            <Link
+                              href={`/dashboard/match-analysis/${analysis.id}`}
+                            >
                               <Eye className="h-4 w-4" />
                               <span className="sr-only">View</span>
                             </Link>

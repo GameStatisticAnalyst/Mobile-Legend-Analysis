@@ -53,7 +53,7 @@ export function CardDescription({
 export function CardContent({ className = "", ...props }: CardProps) {
   return (
     <div
-      className={cn("p-6 pt-0 mt-4", className)}
+      className={cn("", className)}
       {...props}
     />
   );

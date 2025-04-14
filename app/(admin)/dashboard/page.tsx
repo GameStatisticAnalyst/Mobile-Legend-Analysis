@@ -1,3 +1,5 @@
+// "use client";
+
 import AdminLayout from "@/layout/admin-layout";
 import StatCard from "@/components/dashboard/stat-card";
 import RecentActivity from "@/components/dashboard/recent-activities";
@@ -14,6 +16,7 @@ import {
   Calendar,
   Activity,
 } from "lucide-react";
+
 import type {
   Activity as ActivityType,
   AdminAnalysis,
@@ -30,9 +33,11 @@ import {
 } from "@/components/ui/card";
 import Button from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Avatar from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
+
+import { useSession } from "next-auth/react";
 
 // import {
 //   quickActions,
@@ -207,28 +212,28 @@ const quickActions = [
     title: "Create Analysis",
     description: "Start a new match analysis",
     icon: <Plus className="h-5 w-5" />,
-    href: "/admin/analysis/create",
+    href: "/dashboard/analysis/create",
     color: "bg-gradient-to-br from-blue-500 to-blue-600",
   },
   {
     title: "Recent Drafts",
     description: "Continue your work",
     icon: <Clock className="h-5 w-5" />,
-    href: "/admin/analysis?filter=draft",
+    href: "/dashboard/analysis?filter=draft",
     color: "bg-gradient-to-br from-purple-500 to-purple-600",
   },
   {
     title: "Quick Reports",
     description: "Generate insights",
     icon: <Zap className="h-5 w-5" />,
-    href: "/admin/reports/generate",
+    href: "/dashboard/reports/generate",
     color: "bg-gradient-to-br from-emerald-500 to-emerald-600",
   },
   {
     title: "Manage Teams",
     description: "Update team data",
     icon: <Shield className="h-5 w-5" />,
-    href: "/admin/teams",
+    href: "/dashboard/teams",
     color: "bg-gradient-to-br from-amber-500 to-amber-600",
   },
 ];
@@ -242,6 +247,7 @@ function getGreeting(): string {
 }
 
 export default async function AdminDashboard() {
+  // const { data: session, status } = useSession();
   const greeting = getGreeting();
   return (
     <AdminLayout>
