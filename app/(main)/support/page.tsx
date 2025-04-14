@@ -101,10 +101,10 @@ export default function Support(): ReactElement {
                   <Mail className="h-4 w-4 mr-2" />
                   Email
                 </TabsTrigger>
-                <TabsTrigger value="phone-support" className="py-3">
+                {/* <TabsTrigger value="phone-support" className="py-3">
                   <Phone className="h-4 w-4 mr-2" />
                   Telepon
-                </TabsTrigger>
+                </TabsTrigger> */}
               </TabsList>
 
               <TabsContent value="contact-form" className="border rounded-lg p-6">
@@ -151,12 +151,6 @@ export default function Support(): ReactElement {
                         placeholder="Jelaskan masalah atau pertanyaan Anda secara detail..."
                         rows={6}
                       />
-                      {/* <textarea
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary focus:border-primary/50"
-                        id="message"
-                        placeholder="Jelaskan masalah atau pertanyaan Anda secara detail..."
-                        rows={6}
-                      /> */}
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -234,7 +228,7 @@ export default function Support(): ReactElement {
                 </div>
               </TabsContent>
 
-              <TabsContent value="phone-support" className="border rounded-lg p-6">
+              {/* <TabsContent value="phone-support" className="border rounded-lg p-6">
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-2xl font-bold mb-2">Dukungan Telepon</h2>
@@ -279,53 +273,8 @@ export default function Support(): ReactElement {
                     </div>
                   </div>
                 </div>
-              </TabsContent>
+              </TabsContent> */}
             </Tabs>
-          </div>
-
-          {/* Office Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Jam Operasional</h2>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span className="font-medium">Senin - Jumat</span>
-                  <span>09:00 - 17:00 WIB</span>
-                </div>
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span className="font-medium">Sabtu</span>
-                  <span>10:00 - 14:00 WIB</span>
-                </div>
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span className="font-medium">Minggu & Hari Libur</span>
-                  <span>Tutup</span>
-                </div>
-                <p className="text-sm text-muted-foreground pt-2">
-                  Dukungan email tersedia 24/7, tetapi respons mungkin tertunda di luar jam operasional.
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Lokasi Kantor</h2>
-              <div className="bg-muted p-4 rounded-lg">
-                <p className="font-medium">ML Analysis Indonesia</p>
-                <p className="text-muted-foreground">
-                  Jl. Teknologi No. 123
-                  <br />
-                  Kota Jakarta Selatan
-                  <br />
-                  DKI Jakarta 12950
-                  <br />
-                  Indonesia
-                </p>
-                <div className="mt-4">
-                  <Button variant="outline" size="sm">
-                    Lihat di Peta
-                  </Button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
     </>

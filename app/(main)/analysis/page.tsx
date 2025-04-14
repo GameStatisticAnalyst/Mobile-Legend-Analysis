@@ -1,18 +1,141 @@
-"use client"
+"use client";
 
-import Button from "@/components/ui/button"
-import Input from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import AnalysisCard from "@/components/analysis-card"
-import { Search, Filter, ArrowUpDown } from "lucide-react"
+import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AnalysisCard from "@/components/analysis-card";
+import { Search, Filter, ArrowUpDown, X } from "lucide-react";
 
-import { tournaments, teams, featuredAnalyses, recentAnalyses } from "./placeholderData"
-import { ReactElement } from "react"
-import Link from "next/link"
+import {
+  tournaments,
+  teams,
+  featuredAnalyses,
+  recentAnalyses,
+} from "./placeholderData";
+import { ReactElement, useState, useEffect } from "react";
+import Link from "next/link";
 
-export default function AnalysisPage():ReactElement {
+const allAnalyses = [...featuredAnalyses, ...recentAnalyses];
+
+export default function AnalysisPage(): ReactElement {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<typeof allAnalyses>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState({
+    tournaments: [] as string[],
+    teams: [] as string[],
+    dateRange: { start: "", end: "" },
+  });
+
+  const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+
+    // Simple search implementation
+    const query = searchQuery.toLowerCase();
+    const results = allAnalyses.filter((analysis) => {
+      return (
+        analysis.teamA.name.toLowerCase().includes(query) ||
+        analysis.teamB.name.toLowerCase().includes(query) ||
+        analysis.description.toLowerCase().includes(query) ||
+        analysis.tags.some((tag) => tag.toLowerCase().includes(query)) ||
+        analysis.createdBy.name.toLowerCase().includes(query)
+      );
+    });
+
+    setSearchResults(results);
+  };
+
+  const handleFilterChange = (
+    type: "tournaments" | "teams",
+    id: string,
+    checked: boolean
+  ) => {
+    setSelectedFilters((prev) => {
+      if (checked) {
+        return {
+          ...prev,
+          [type]: [...prev[type], id],
+        };
+      } else {
+        return {
+          ...prev,
+          [type]: prev[type].filter((item) => item !== id),
+        };
+      }
+    });
+  };
+
+  const handleDateChange = (type: "start" | "end", value: string) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      dateRange: {
+        ...prev.dateRange,
+        [type]: value,
+      },
+    }));
+  };
+
+  const applyFilters = () => {
+    let filtered = isSearching ? searchResults : allAnalyses;
+
+    if (selectedFilters.tournaments.length > 0) {
+      filtered = filtered.filter((analysis) =>
+        analysis.tags.some((tag) =>
+          selectedFilters.tournaments.some(
+            (id) =>
+              tournaments.find((t) => t.id === id)?.name.includes(tag) || false
+          )
+        )
+      );
+    }
+
+    if (selectedFilters.teams.length > 0) {
+      filtered = filtered.filter(
+        (analysis) =>
+          selectedFilters.teams.includes(analysis.teamA.id) ||
+          selectedFilters.teams.includes(analysis.teamB.id)
+      );
+    }
+
+    if (selectedFilters.dateRange.start) {
+      filtered = filtered.filter(
+        (analysis) =>
+          new Date(analysis.date) >= new Date(selectedFilters.dateRange.start)
+      );
+    }
+
+    if (selectedFilters.dateRange.end) {
+      filtered = filtered.filter(
+        (analysis) =>
+          new Date(analysis.date) <= new Date(selectedFilters.dateRange.end)
+      );
+    }
+
+    return filtered;
+  };
+
+  const resetFilters = () => {
+    setSelectedFilters({
+      tournaments: [],
+      teams: [],
+      dateRange: { start: "", end: "" },
+    });
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setIsSearching(false);
+  };
+
+  const filteredResults = applyFilters();
+
   return (
     <>
       {/* Hero Section */}
@@ -35,7 +158,18 @@ export default function AnalysisPage():ReactElement {
               <Input
                 placeholder="Search for teams, tournaments, or analysts..."
                 className="pl-10 py-6 rounded-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-md"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
+              {searchQuery && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-16 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
               <Button className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600">
                 Search
               </Button>
@@ -58,7 +192,7 @@ export default function AnalysisPage():ReactElement {
                     <Button
                       variant="default"
                       size="sm"
-                      className="text-blue-600 dark:text-blue-400 h-auto p-0"
+                      className="text-blue-600 h-auto py-1 px-4 rounded-full"
                     >
                       Reset
                     </Button>
@@ -163,58 +297,128 @@ export default function AnalysisPage():ReactElement {
               </Card>
             </div>
 
-            {/* Main Content */}
+            {/* Data Content */}
             <div className="w-full lg:w-3/4">
-              <Tabs defaultValue="all" className="w-full">
-                <div className="flex items-center justify-between mb-6">
-                  <TabsList className="bg-white/90 dark:bg-gray-800/90 py-2 px-1 rounded-lg">
-                    <TabsTrigger value="all" className="rounded-md">
-                      All Analyses
-                    </TabsTrigger>
-                    <TabsTrigger value="featured" className="rounded-md">
-                      Featured
-                    </TabsTrigger>
-                    <TabsTrigger value="recent" className="rounded-md">
-                      Recent
-                    </TabsTrigger>
-                    <TabsTrigger value="popular" className="rounded-md">
-                      Popular
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex items-center gap-1"
-                  >
-                    <ArrowUpDown className="h-3.5 w-3.5" />
-                    Sort
-                  </Button>
-                </div>
-
-                <TabsContent value="all" className="mt-0">
-                  {/* Featured Section */}
-                  <div className="mb-8">
-                    <h2 className="text-2xl font-bold mb-4">
-                      Featured Analyses
+              {isSearching ? (
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold">
+                      Search Results for "{searchQuery}"
                     </h2>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {featuredAnalyses.map((analysis) => (
-                        <Link href={`/analysis/${analysis.id}`} key={analysis.id} className="group">
+                    <Button variant="outline" size="sm" onClick={clearSearch}>
+                      Clear Search
+                    </Button>
+                  </div>
+
+                  {filteredResults.length > 0 ? (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {filteredResults.map((analysis) => (
+                        <div key={analysis.id} className="group">
                           <AnalysisCard
                             analysis={analysis}
                             onClick={() => {}}
                           />
                           <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-blue-600 to-purple-600 mt-1 transition-all duration-300 rounded-full"></div>
-                        </Link>
+                        </div>
                       ))}
                     </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
+                        <Search className="h-8 w-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-xl font-medium mb-2">
+                        No results found
+                      </h3>
+                      <p className="text-gray-500 dark:text-gray-400 mb-6">
+                        We couldn't find any analyses matching "{searchQuery}"
+                      </p>
+                      <Button onClick={clearSearch}>View All Analyses</Button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Tabs defaultValue="all" className="w-full">
+                  <div className="flex items-center justify-between mb-6">
+                    <TabsList className="bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                      <TabsTrigger value="all" className="rounded-md">
+                        All Analyses
+                      </TabsTrigger>
+                      <TabsTrigger value="featured" className="rounded-md">
+                        Featured
+                      </TabsTrigger>
+                      <TabsTrigger value="recent" className="rounded-md">
+                        Recent
+                      </TabsTrigger>
+                      <TabsTrigger value="popular" className="rounded-md">
+                        Popular
+                      </TabsTrigger>
+                    </TabsList>
+
+                    {/* <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-1"
+                    >
+                      <ArrowUpDown className="h-3.5 w-3.5" />
+                      Sort
+                    </Button> */}
                   </div>
 
-                  {/* Recent Analyses */}
-                  <div>
-                    <h2 className="text-2xl font-bold mb-4">Recent Analyses</h2>
-                    <div className="grid md:grid-cols-2 2xl:grid-cols-3 gap-6">
+                  <TabsContent value="all" className="mt-0">
+                    {/* Featured Section */}
+                    <div className="mb-8">
+                      <h2 className="text-2xl font-bold mb-4">
+                        Featured Analyses
+                      </h2>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        {featuredAnalyses.map((analysis) => (
+                          <div key={analysis.id} className="group">
+                            <AnalysisCard
+                              analysis={analysis}
+                              onClick={() => {}}
+                            />
+                            <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-blue-600 to-purple-600 mt-1 transition-all duration-300 rounded-full"></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Recent Analyses */}
+                    <div>
+                      <h2 className="text-2xl font-bold mb-4">
+                        Recent Analyses
+                      </h2>
+                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {recentAnalyses.map((analysis) => (
+                          <div key={analysis.id} className="group">
+                            <AnalysisCard
+                              analysis={analysis}
+                              onClick={() => {}}
+                            />
+                            <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-blue-600 to-purple-600 mt-1 transition-all duration-300 rounded-full"></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="featured">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {featuredAnalyses.map((analysis) => (
+                        <div key={analysis.id} className="group">
+                          <AnalysisCard
+                            analysis={analysis}
+                            onClick={() => {}}
+                          />
+                          <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-blue-600 to-purple-600 mt-1 transition-all duration-300 rounded-full"></div>
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="recent">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {recentAnalyses.map((analysis) => (
                         <div key={analysis.id} className="group">
                           <AnalysisCard
@@ -225,95 +429,75 @@ export default function AnalysisPage():ReactElement {
                         </div>
                       ))}
                     </div>
-                  </div>
-                </TabsContent>
+                  </TabsContent>
 
-                <TabsContent value="featured">
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {featuredAnalyses.map((analysis) => (
-                      <div key={analysis.id} className="group">
-                        <AnalysisCard analysis={analysis} onClick={() => {}} />
-                        <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-blue-600 to-purple-600 mt-1 transition-all duration-300 rounded-full"></div>
-                      </div>
-                    ))}
-                  </div>
-                </TabsContent>
+                  <TabsContent value="popular">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {[...featuredAnalyses, ...recentAnalyses.slice(0, 4)].map(
+                        (analysis) => (
+                          <div key={analysis.id} className="group">
+                            <AnalysisCard
+                              analysis={analysis}
+                              onClick={() => {}}
+                            />
+                            <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-blue-600 to-purple-600 mt-1 transition-all duration-300 rounded-full"></div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              )}
 
-                <TabsContent value="recent">
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {recentAnalyses.map((analysis) => (
-                      <div key={analysis.id} className="group">
-                        <AnalysisCard analysis={analysis} onClick={() => {}} />
-                        <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-blue-600 to-purple-600 mt-1 transition-all duration-300 rounded-full"></div>
-                      </div>
-                    ))}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="popular">
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {[...featuredAnalyses, ...recentAnalyses.slice(0, 4)].map(
-                      (analysis) => (
-                        <div key={analysis.id} className="group">
-                          <AnalysisCard
-                            analysis={analysis}
-                            onClick={() => {}}
-                          />
-                          <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-blue-600 to-purple-600 mt-1 transition-all duration-300 rounded-full"></div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </TabsContent>
-              </Tabs>
-
-              {/* Pagination */}
-              <div className="flex justify-center mt-12">
-                <div className="flex items-center space-x-2">
-                  <Button variant="outline" size="icon" disabled>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+              {/* Pagination - Only show when not searching */}
+              {!isSearching && (
+                <div className="flex justify-center mt-12">
+                  <div className="flex items-center space-x-2">
+                    <Button variant="outline" size="icon" disabled>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="bg-blue-50 text-blue-600 border-blue-200"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 19l-7-7 7-7"
-                      />
-                    </svg>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="bg-blue-50 text-blue-600 border-blue-200"
-                  >
-                    1
-                  </Button>
-                  <Button variant="outline">2</Button>
-                  <Button variant="outline">3</Button>
-                  <Button variant="outline">4</Button>
-                  <Button variant="outline">5</Button>
-                  <Button variant="outline" size="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </Button>
+                      1
+                    </Button>
+                    <Button variant="outline">2</Button>
+                    <Button variant="outline">3</Button>
+                    <Button variant="outline">4</Button>
+                    <Button variant="outline">5</Button>
+                    <Button variant="outline" size="icon">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -321,4 +505,3 @@ export default function AnalysisPage():ReactElement {
     </>
   );
 }
-

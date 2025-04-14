@@ -1,20 +1,21 @@
-import type * as React from "react"
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "ghost" | "outline"
-  size?: "default" | "sm" | "lg" | "icon"
-  asChild?: boolean // Add the asChild prop if needed
+  variant?: "default" | "ghost" | "outline";
+  size?: "default" | "sm" | "lg" | "icon";
+  asChild?: boolean; // Add the asChild prop
 }
 
 export default function Button({
   className = "",
   variant = "default",
   size = "default",
-  asChild, // Destructure `asChild` here to avoid passing it down
+  asChild, // Destructure `asChild` here
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none"
+    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
   const variants = {
     default: "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500",
@@ -29,14 +30,11 @@ export default function Button({
     sm: "h-9 px-3",
     lg: "h-11 px-8",
     icon: "h-10 w-10",
-  }
+  };
 
-  const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`
+  const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
 
-  if (asChild) {
-    // Render children directly without the button wrapper
-    return <>{props.children}</>
-  }
+  const Component = asChild ? Slot : "button";
 
-  return <button className={classes} {...props} />
+  return <Component className={classes} {...props} />;
 }
