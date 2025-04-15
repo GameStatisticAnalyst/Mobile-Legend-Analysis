@@ -18,6 +18,7 @@ export interface ButtonProps
     | "link";
   size?: "default" | "sm" | "lg" | "icon";
   isFullWidth?: boolean;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -33,6 +34,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon,
       children,
       disabled,
+      onClick, 
       ...props
     },
     ref
@@ -71,14 +73,26 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     if (asChild) {
       return (
-        <Slot className={classes} ref={ref} disabled={isDisabled} {...props}>
+        <Slot
+          className={classes}
+          ref={ref}
+          disabled={isDisabled}
+          onClick={onClick} 
+          {...props}
+        >
           {children}
         </Slot>
       );
     }
 
     return (
-      <button className={classes} ref={ref} disabled={isDisabled} {...props}>
+      <button
+        className={classes}
+        ref={ref}
+        disabled={isDisabled}
+        onClick={onClick} 
+        {...props}
+      >
         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {!isLoading && leftIcon && <span className="mr-2">{leftIcon}</span>}
         {children}
@@ -89,4 +103,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-export default Button 
+export default Button;

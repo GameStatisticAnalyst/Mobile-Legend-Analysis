@@ -24,7 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Checkbox from "@/components/ui/checkbox";
-import Avatar from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import {
   Settings,
   Play,
@@ -312,7 +312,12 @@ export default function MatchAnalysisPage({
         <Card className="lg:col-span-2 border-red-200 dark:border-red-900">
           <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
             <CardTitle className="flex items-center gap-2">
-              <Avatar className="h-8 w-8 border-2 border-white" src={teamB.logo} alt={teamB.name} fallback={teamB.name.substring(0, 2)}/>
+              <Avatar
+                className="h-8 w-8 border-2 border-white"
+                src={teamB.logo}
+                alt={teamB.name}
+                fallback={teamB.name.substring(0, 2)}
+              />
               <span>{teamB.name}</span>
             </CardTitle>
           </CardHeader>
@@ -338,8 +343,12 @@ export default function MatchAnalysisPage({
                     className="relative h-12 w-12 rounded-full overflow-hidden border-2"
                     style={{ borderColor: player.color }}
                   >
-                    <Avatar className="h-full w-full" src={player.hero.image}
-                        alt={player.hero.name} fallback={player.hero.name.substring(0, 2)}/>
+                    <Avatar
+                      className="h-full w-full"
+                      src={player.hero.image}
+                      alt={player.hero.name}
+                      fallback={player.hero.name.substring(0, 2)}
+                    />
                     {selectedPlayer?.id === player.id && (
                       <div className="absolute inset-0 bg-red-500/30 flex items-center justify-center">
                         <Checkbox checked className="h-5 w-5" />

@@ -138,12 +138,12 @@ export default function AnalysisPage(): ReactElement {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
-                            <Link href={`/match-analysis/${analysis.id}`}>
+                            <Link href={`/dashboard/match-analysis/${analysis.id}`}>
                               <Eye className="mr-2 h-4 w-4" /> View
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
-                            <Link href={`/match-analysis/${analysis.id}/edit`}>
+                            <Link href={`/dashboard/match-analysis/${analysis.id}/edit`}>
                               <Pencil className="mr-2 h-4 w-4" /> Edit
                             </Link>
                           </DropdownMenuItem>

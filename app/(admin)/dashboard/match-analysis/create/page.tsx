@@ -2,8 +2,10 @@
 
 import type React from "react";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useReducer } from "react";
 import Button from "@/components/ui/button";
+import TeamCard from "./teamCard";
+import TeamStatusCard from "./tableCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
@@ -17,17 +19,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import Input from "@/components/ui/input";
 import Label from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import Checkbox from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Settings,
   Play,
@@ -49,33 +40,46 @@ import {
   sampleHeroes,
   roles,
 } from "../placeholder";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Slider from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import cn from "@/utils/cn";
 import type { Team, Player, GameEvent, Hero } from "@/types/match-analysis";
 
+const initialMatchInfo = {
+  competitionId: "",
+  title: "",
+  tournament: "",
+  round: "",
+  dateId: new Date().toLocaleDateString(),
+  stage: "",
+  tags: "",
+  matchId: "",
+};
+
+function matchInfoReducer(
+  state: typeof initialMatchInfo,
+  action: { type: string; payload?: any }
+) {
+  switch (action.type) {
+    case "UPDATE_FIELD":
+      return {
+        ...state,
+        [action.payload.field]: action.payload.value,
+      };
+    case "RESET":
+      return initialMatchInfo;
+    default:
+      return state;
+  }
+}
+
 export default function MatchAnalysisPage() {
-  const [matchInfo, setMatchInfo] = useState({
-    competitionId: "MDL_mid2024",
-    dateId: new Date().toLocaleDateString(),
-    matchId: "",
-    round: "1",
-    stage: "Group Stage",
-  });
+  const [matchInfo, dispatchMatchInfo] = useReducer(
+    matchInfoReducer,
+    initialMatchInfo
+  );
+
   const [teamA, setTeamA] = useState<Team>(initialTeamA);
   const [teamB, setTeamB] = useState<Team>(initialTeamB);
   const [events, setEvents] = useState<GameEvent[]>([]);
@@ -104,13 +108,11 @@ export default function MatchAnalysisPage() {
       return;
     }
 
-    // Jika pemain dari tim yang berbeda dipilih, set sebagai target
     if (selectedPlayer && selectedPlayer.teamId !== player.teamId) {
       setTargetPlayer(player);
       return;
     }
 
-    // Jika pemain yang sama dipilih, reset selection
     if (selectedPlayer?.id === player.id) {
       setSelectedPlayer(null);
       setTargetPlayer(null);
@@ -278,12 +280,16 @@ export default function MatchAnalysisPage() {
 
     const team = teamId === teamA.id ? teamA : teamB;
 
+    // 17 header
     const headers = [
       "Competition_id",
-      "Date_id",
-      "Match_id",
+      "Title",
+      "Tournament",
       "Round",
+      "Date_id",
       "Stage",
+      "Tags",
+      "Match_id",
       "Coordinates x",
       "Coordinates y",
       "Event",
@@ -301,21 +307,25 @@ export default function MatchAnalysisPage() {
       );
       const eventType = eventTypes.find((t) => t.id === event.type)?.name || "";
 
+      //
       return [
-        matchInfo.competitionId,
-        matchInfo.dateId,
-        matchInfo.matchId || `match_${Date.now()}`,
-        matchInfo.round,
-        matchInfo.stage,
-        `${event.coordinates.x.toFixed(2)}%`,
+        matchInfo.competitionId || "",
+        matchInfo.title || "",
+        matchInfo.tournament || "",
+        matchInfo.round || "",
+        matchInfo.dateId || "",
+        matchInfo.stage || "",
+        matchInfo.tags || "",
+        matchInfo.matchId || `match_${Date.now()} `,
+        `${event.coordinates.x.toFixed(2)}% `,
         `${event.coordinates.y.toFixed(2)}%`,
         `${eventType} ${sourcePlayer?.hero.role || ""}`,
         eventType,
         sourcePlayer?.hero.role || "",
         sourcePlayer?.name || "",
         sourcePlayer?.hero.name || "",
-        team.name,
-        formatTime(event.timestamp),
+        team.name || "",
+        formatTime(event.timestamp) || "",
       ];
     });
 
@@ -333,6 +343,14 @@ export default function MatchAnalysisPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleMatchSettings = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    dispatchMatchInfo({
+      type: "UPDATE_FIELD",
+      payload: { field: id, value },
+    });
   };
 
   return (
@@ -428,182 +446,28 @@ export default function MatchAnalysisPage() {
 
             <TabsContent value="analysis" className="mt-6 space-y-6 ">
               <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
-                {/* Blue Team */}
-                <Card
-                  className={cn(
-                    "lg:col-span-2 overflow-hidden",
-                    darkMode
-                      ? "border-blue-900 bg-gray-900"
-                      : "border-blue-200 bg-white"
-                  )}
-                >
-                  <CardHeader
-                    className={cn(
-                      "bg-gradient-to-r text-white rounded-t-lg py-3",
-                      darkMode
-                        ? "from-blue-700 to-blue-800"
-                        : "from-blue-500 to-blue-600"
-                    )}
-                  >
-                    <CardTitle className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8 border-2 border-white">
-                        <AvatarImage
-                          src={teamA.logo || "/placeholder.svg"}
-                          alt={teamA.name}
-                        />
-                        <AvatarFallback>
-                          {teamA.name.substring(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span>{teamA.name}</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    {!isEditMode && (
-                      <div className="p-2 border-b dark:border-gray-800 flex flex-wrap gap-1 justify-center">
-                        {/* Event Tools */}
-                        {eventTypes.map((eventType) => (
-                          <Button
-                            key={eventType.id}
-                            variant={
-                              selectedEventType === eventType.id
-                                ? "default"
-                                : "outline"
-                            }
-                            size="sm"
-                            className={cn(
-                              "h-8 text-xs rounded-md dark:hover:bg-gray-800",
-                              selectedEventType === eventType.id
-                                ? darkMode
-                                  ? "bg-blue-700"
-                                  : "bg-blue-600"
-                                : ""
-                            )}
-                            onClick={() => handleEventTypeSelect(eventType.id)}
-                            disabled={
-                              !selectedPlayer ||
-                              selectedPlayer.teamId !== teamA.id
-                            }
-                          >
-                            {eventType.name}
-                          </Button>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="p-2 space-y-2">
-                      {/* Player Tools */}
-                      {teamA.players.map((player) => (
-                        <div
-                          key={player.id}
-                          className={cn(
-                            "flex items-center gap-3 p-2 rounded-lg transition-all",
-                            isEditMode ? "cursor-default" : "cursor-pointer",
-                            selectedPlayer?.id === player.id
-                              ? darkMode
-                                ? "bg-blue-900/50 ring-2 ring-blue-700"
-                                : "bg-blue-100 ring-2 ring-blue-500"
-                              : targetPlayer?.id === player.id
-                              ? darkMode
-                                ? "bg-purple-900/50 ring-2 ring-purple-700"
-                                : "bg-purple-100 ring-2 ring-purple-500"
-                              : darkMode
-                              ? "hover:bg-gray-800"
-                              : "hover:bg-gray-100"
-                          )}
-                          onClick={() =>
-                            !isEditMode && handlePlayerSelect(player)
-                          }
-                        >
-                          <div
-                            className="relative h-12 w-12 rounded-full overflow-hidden border-2"
-                            style={{ borderColor: player.color }}
-                          >
-                            <Avatar className="h-full w-full">
-                              <AvatarImage
-                                src={player.hero.image || "/placeholder.svg"}
-                                alt={player.hero.name}
-                              />
-                              <AvatarFallback>
-                                {player.hero.name.substring(0, 2)}
-                              </AvatarFallback>
-                            </Avatar>
-                            {selectedPlayer?.id === player.id &&
-                              !isEditMode && (
-                                <div className="absolute inset-0 bg-blue-500/30 flex items-center justify-center">
-                                  <Checkbox checked />
-                                </div>
-                              )}
-                          </div>
-
-                          <div className="flex-1">
-                            {isEditMode && editingPlayer?.id === player.id ? (
-                              <div className="flex items-center gap-2">
-                                <Input
-                                  value={editingName}
-                                  onChange={(e) =>
-                                    setEditingName(e.target.value)
-                                  }
-                                  className="h-8 text-sm"
-                                />
-                                <Button
-                                  size="icon"
-                                  variant="ghost"
-                                  className="h-8 w-8"
-                                  onClick={savePlayerEdit}
-                                >
-                                  <Check className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            ) : (
-                              <div className="font-medium flex items-center justify-between">
-                                <span>{player.name}</span>
-                                {isEditMode && (
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="h-6 w-6"
-                                    onClick={() => handlePlayerSelect(player)}
-                                  >
-                                    <Edit className="h-3 w-3" />
-                                  </Button>
-                                )}
-                              </div>
-                            )}
-
-                            <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                              {isEditMode ? (
-                                <div className="flex items-center gap-2 w-full">
-                                  <HeroSelect
-                                    player={player}
-                                    updateHero={updatePlayerHero}
-                                  />
-                                  <RoleSelect
-                                    player={player}
-                                    updateRole={(role) => {
-                                      const updatedHero = {
-                                        ...player.hero,
-                                        role,
-                                      };
-                                      updatePlayerHero(player, updatedHero);
-                                    }}
-                                  />
-                                </div>
-                              ) : (
-                                <>
-                                  <span>{player.hero.name}</span>
-                                  <Badge variant="outline" className="text-xs">
-                                    {player.hero.role}
-                                  </Badge>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Blue Team - TeamA, darkMode, isEditMode, eventTypes */}
+                <TeamCard
+                  team={teamA}
+                  darkMode={darkMode}
+                  isEditMode={isEditMode}
+                  selectedPlayer={selectedPlayer}
+                  targetPlayer={targetPlayer}
+                  selectedEventType={selectedEventType}
+                  eventTypes={eventTypes}
+                  handlePlayerSelect={handlePlayerSelect}
+                  handleEventTypeSelect={handleEventTypeSelect}
+                  handleTargetPlayerSelect={handleTargetPlayerSelect}
+                  updatePlayerHero={updatePlayerHero}
+                  updateRole={(player, role) => {
+                    const updatedHero = { ...player.hero, role };
+                    updatePlayerHero(player, updatedHero);
+                  }}
+                  editingPlayer={editingPlayer}
+                  editingName={editingName}
+                  setEditingName={setEditingName}
+                  savePlayerEdit={savePlayerEdit}
+                />
                 {/* Video */}
                 <Card
                   className={cn(
@@ -744,296 +608,38 @@ export default function MatchAnalysisPage() {
                   </CardContent>
                 </Card>
                 {/* Red Team */}
-                <Card
-                  className={cn(
-                    "lg:col-span-2 overflow-hidden",
-                    darkMode
-                      ? "border-red-900 bg-gray-900"
-                      : "border-red-200 bg-white"
-                  )}
-                >
-                  <CardHeader
-                    className={cn(
-                      "bg-gradient-to-r text-white rounded-t-lg py-3",
-                      darkMode
-                        ? "from-red-700 to-red-800"
-                        : "from-red-500 to-red-600"
-                    )}
-                  >
-                    <CardTitle className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8 border-2 border-white">
-                        <AvatarImage
-                          src={teamB.logo || "/placeholder.svg"}
-                          alt={teamB.name}
-                        />
-                        <AvatarFallback>
-                          {teamB.name.substring(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span>{teamB.name}</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    {!isEditMode && (
-                      <div className="p-2 border-b dark:border-gray-800  flex flex-wrap gap-1 justify-center">
-                        {/* Event Tools */}
-                        {eventTypes.map((eventType) => (
-                          <Button
-                            key={eventType.id}
-                            variant={
-                              selectedEventType === eventType.id
-                                ? "default"
-                                : "outline"
-                            }
-                            size="sm"
-                            className={cn(
-                              "h-8 text-xs rounded-md dark:hover:bg-gray-800",
-                              selectedEventType === eventType.id
-                                ? darkMode
-                                  ? "bg-red-700"
-                                  : "bg-red-600"
-                                : ""
-                            )}
-                            onClick={() => handleEventTypeSelect(eventType.id)}
-                            disabled={
-                              !selectedPlayer ||
-                              selectedPlayer.teamId !== teamB.id
-                            }
-                          >
-                            {eventType.name}
-                          </Button>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="p-2 space-y-2">
-                      {/* Player Tools */}
-                      {teamB.players.map((player) => (
-                        <div
-                          key={player.id}
-                          className={cn(
-                            "flex items-center gap-3 p-2 rounded-lg transition-all",
-                            isEditMode ? "cursor-default" : "cursor-pointer",
-                            selectedPlayer?.id === player.id
-                              ? darkMode
-                                ? "bg-red-900/50 ring-2 ring-red-700"
-                                : "bg-red-100 ring-2 ring-red-500"
-                              : targetPlayer?.id === player.id
-                              ? darkMode
-                                ? "bg-purple-900/50 ring-2 ring-purple-700"
-                                : "bg-purple-100 ring-2 ring-purple-500"
-                              : darkMode
-                              ? "hover:bg-gray-800"
-                              : "hover:bg-gray-100"
-                          )}
-                          onClick={() => {
-                            if (isEditMode) {
-                              handlePlayerSelect(player);
-                            } else {
-                              selectedPlayer &&
-                              selectedPlayer.teamId !== player.teamId
-                                ? handleTargetPlayerSelect(player)
-                                : handlePlayerSelect(player);
-                            }
-                          }}
-                        >
-                          <div
-                            className="relative h-12 w-12 rounded-full overflow-hidden border-2"
-                            style={{ borderColor: player.color }}
-                          >
-                            <Avatar className="h-full w-full">
-                              <AvatarImage
-                                src={player.hero.image || "/placeholder.svg"}
-                                alt={player.hero.name}
-                              />
-                              <AvatarFallback>
-                                {player.hero.name.substring(0, 2)}
-                              </AvatarFallback>
-                            </Avatar>
-                            {selectedPlayer?.id === player.id &&
-                              !isEditMode && (
-                                <div className="absolute inset-0 bg-red-500/30 flex items-center justify-center">
-                                  <Checkbox checked />
-                                </div>
-                              )}
-                            {targetPlayer?.id === player.id && !isEditMode && (
-                              <div className="absolute inset-0 bg-purple-500/30 flex items-center justify-center">
-                                <Checkbox checked />
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex-1">
-                            {isEditMode && editingPlayer?.id === player.id ? (
-                              <div className="flex items-center gap-2">
-                                <Input
-                                  value={editingName}
-                                  onChange={(e) =>
-                                    setEditingName(e.target.value)
-                                  }
-                                  className="h-8 text-sm"
-                                />
-                                <Button
-                                  size="icon"
-                                  variant="ghost"
-                                  className="h-8 w-8"
-                                  onClick={savePlayerEdit}
-                                >
-                                  <Check className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            ) : (
-                              <div className="font-medium flex items-center justify-between">
-                                <span>{player.name}</span>
-                                {isEditMode && (
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="h-6 w-6"
-                                    onClick={() => handlePlayerSelect(player)}
-                                  >
-                                    <Edit className="h-3 w-3" />
-                                  </Button>
-                                )}
-                              </div>
-                            )}
-
-                            <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                              {isEditMode ? (
-                                <div className="flex items-center gap-2 w-full">
-                                  <HeroSelect
-                                    player={player}
-                                    updateHero={updatePlayerHero}
-                                  />
-                                  <RoleSelect
-                                    player={player}
-                                    updateRole={(role) => {
-                                      const updatedHero = {
-                                        ...player.hero,
-                                        role,
-                                      };
-                                      updatePlayerHero(player, updatedHero);
-                                    }}
-                                  />
-                                </div>
-                              ) : (
-                                <>
-                                  <span>{player.hero.name}</span>
-                                  <Badge variant="outline" className="text-xs">
-                                    {player.hero.role}
-                                  </Badge>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                <TeamCard
+                  team={teamB}
+                  darkMode={darkMode}
+                  isEditMode={isEditMode}
+                  selectedPlayer={selectedPlayer}
+                  targetPlayer={targetPlayer}
+                  selectedEventType={selectedEventType}
+                  eventTypes={eventTypes}
+                  handlePlayerSelect={handlePlayerSelect}
+                  handleEventTypeSelect={handleEventTypeSelect}
+                  handleTargetPlayerSelect={handleTargetPlayerSelect}
+                  updatePlayerHero={updatePlayerHero}
+                  updateRole={(player, role) => {
+                    const updatedHero = { ...player.hero, role };
+                    updatePlayerHero(player, updatedHero);
+                  }}
+                  editingPlayer={editingPlayer}
+                  editingName={editingName}
+                  setEditingName={setEditingName}
+                  savePlayerEdit={savePlayerEdit}
+                />
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
-                <Card
-                  className={cn(
-                    "lg:col-span-2",
-                    darkMode ? "bg-gray-900 border-gray-800" : "bg-white"
-                  )}
-                >
-                  <CardHeader
-                    className={cn(
-                      "bg-gradient-to-r text-white rounded-t-lg py-3",
-                      darkMode
-                        ? "from-blue-700 to-blue-800"
-                        : "from-blue-500 to-blue-600"
-                    )}
-                  >
-                    <CardTitle className="text-center text-sm">
-                      Status {teamA.name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[100px]">Time</TableHead>
-                          <TableHead>Event</TableHead>
-                          <TableHead>Player</TableHead>
-                          <TableHead>Target</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {getTeamEvents(teamA.id).map((event) => {
-                          const sourcePlayer = [
-                            ...teamA.players,
-                            ...teamB.players,
-                          ].find((p) => p.id === event.sourcePlayerId);
-                          const targetPlayer = event.targetPlayerId
-                            ? [...teamA.players, ...teamB.players].find(
-                                (p) => p.id === event.targetPlayerId
-                              )
-                            : null;
-                          const eventType = eventTypes.find(
-                            (t) => t.id === event.type
-                          );
-
-                          return (
-                            <TableRow key={event.id}>
-                              <TableCell className="font-mono">
-                                {formatTime(event.timestamp)}
-                              </TableCell>
-                              <TableCell>{eventType?.name}</TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <div
-                                    className="h-2 w-2 rounded-full"
-                                    style={{
-                                      backgroundColor: sourcePlayer?.color,
-                                    }}
-                                  ></div>
-                                  {sourcePlayer?.name}
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                {targetPlayer && (
-                                  <div className="flex items-center gap-2">
-                                    <div
-                                      className="h-2 w-2 rounded-full"
-                                      style={{
-                                        backgroundColor: targetPlayer?.color,
-                                      }}
-                                    ></div>
-                                    {targetPlayer?.name}
-                                  </div>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                        {getTeamEvents(teamA.id).length === 0 && (
-                          <TableRow>
-                            <TableCell
-                              colSpan={4}
-                              className="text-center py-4 text-gray-500"
-                            >
-                              No events recorded
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                  <div className="p-3 border-t dark:border-gray-800">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full rounded-full dark:hover:bg-gray-800"
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Export Data
-                    </Button>
-                  </div>
-                </Card>
+                <TeamStatusCard
+                  team={teamA}
+                  darkMode={darkMode}
+                  getTeamEvents={getTeamEvents}
+                  exportToCSV={exportToCSV}
+                  eventTypes={eventTypes}
+                  players={[...teamA.players, ...teamB.players]}
+                />
 
                 <Card
                   className={cn(
@@ -1076,106 +682,14 @@ export default function MatchAnalysisPage() {
                   </CardContent>
                 </Card>
 
-                <Card
-                  className={cn(
-                    "lg:col-span-2",
-                    darkMode ? "bg-gray-900 border-gray-800" : "bg-white"
-                  )}
-                >
-                  <CardHeader
-                    className={cn(
-                      "bg-gradient-to-r text-white rounded-t-lg py-3",
-                      darkMode
-                        ? "from-red-700 to-red-800"
-                        : "from-red-500 to-red-600"
-                    )}
-                  >
-                    <CardTitle className="text-center text-sm">
-                      Status {teamB.name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[100px]">Time</TableHead>
-                          <TableHead>Event</TableHead>
-                          <TableHead>Player</TableHead>
-                          <TableHead>Target</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {getTeamEvents(teamB.id).map((event) => {
-                          const sourcePlayer = [
-                            ...teamA.players,
-                            ...teamB.players,
-                          ].find((p) => p.id === event.sourcePlayerId);
-                          const targetPlayer = event.targetPlayerId
-                            ? [...teamA.players, ...teamB.players].find(
-                                (p) => p.id === event.targetPlayerId
-                              )
-                            : null;
-                          const eventType = eventTypes.find(
-                            (t) => t.id === event.type
-                          );
-
-                          return (
-                            <TableRow key={event.id}>
-                              <TableCell className="font-mono">
-                                {formatTime(event.timestamp)}
-                              </TableCell>
-                              <TableCell>{eventType?.name}</TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <div
-                                    className="h-2 w-2 rounded-full"
-                                    style={{
-                                      backgroundColor: sourcePlayer?.color,
-                                    }}
-                                  ></div>
-                                  {sourcePlayer?.name}
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                {targetPlayer && (
-                                  <div className="flex items-center gap-2">
-                                    <div
-                                      className="h-2 w-2 rounded-full"
-                                      style={{
-                                        backgroundColor: targetPlayer?.color,
-                                      }}
-                                    ></div>
-                                    {targetPlayer?.name}
-                                  </div>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                        {getTeamEvents(teamB.id).length === 0 && (
-                          <TableRow>
-                            <TableCell
-                              colSpan={4}
-                              className="text-center py-4 text-gray-500"
-                            >
-                              No events recorded
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                  <div className="p-3 border-t dark:border-gray-800">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full rounded-full dark:hover:bg-gray-800"
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Export Data
-                    </Button>
-                  </div>
-                </Card>
+                <TeamStatusCard
+                  team={teamB}
+                  darkMode={darkMode}
+                  getTeamEvents={getTeamEvents}
+                  exportToCSV={exportToCSV}
+                  eventTypes={eventTypes}
+                  players={[...teamA.players, ...teamB.players]}
+                />
               </div>
 
               <Card
@@ -1220,7 +734,9 @@ export default function MatchAnalysisPage() {
                   <div className="space-y-2">
                     <Label htmlFor="match-title">Match Title</Label>
                     <Input
-                      id="match-title"
+                      id="title"
+                      value={matchInfo.title || ""}
+                      onChange={(e) => handleMatchSettings(e)}
                       placeholder="Enter match title"
                       className={darkMode ? "bg-gray-800 border-gray-700" : ""}
                     />
@@ -1228,8 +744,9 @@ export default function MatchAnalysisPage() {
                   <div className="space-y-2">
                     <Label htmlFor="match-date">Match Date</Label>
                     <Input
-                      id="match-date"
-                      type="date"
+                      id="matchDate"
+                      value={matchInfo.matchDate || ""}
+                      onChange={(e) => handleMatchSettings(e)}
                       className={darkMode ? "bg-gray-800 border-gray-700" : ""}
                     />
                   </div>
@@ -1237,6 +754,8 @@ export default function MatchAnalysisPage() {
                     <Label htmlFor="tournament">Tournament</Label>
                     <Input
                       id="tournament"
+                      value={matchInfo.tournament || ""}
+                      onChange={(e) => handleMatchSettings(e)}
                       placeholder="Enter tournament name"
                       className={darkMode ? "bg-gray-800 border-gray-700" : ""}
                     />
@@ -1245,10 +764,19 @@ export default function MatchAnalysisPage() {
                     <Label htmlFor="tags">Tags</Label>
                     <Input
                       id="tags"
+                      value={matchInfo["tags"] || ""}
+                      onChange={(e) => handleMatchSettings(e)}
                       placeholder="Enter tags separated by commas"
                       className={darkMode ? "bg-gray-800 border-gray-700" : ""}
                     />
                   </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => dispatchMatchInfo({ type: "RESET" })}
+                    className="rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                  >
+                    Reset Match Info
+                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -1256,111 +784,5 @@ export default function MatchAnalysisPage() {
         </div>
       </div>
     </div>
-  );
-}
-
-// Hero Selection Component
-function HeroSelect({
-  player,
-  updateHero,
-}: {
-  player: Player;
-  updateHero: (player: Player, hero: Hero) => void;
-}) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between h-8 text-xs"
-        >
-          {player.hero.name}
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search hero..." />
-          <CommandEmpty>No hero found.</CommandEmpty>
-          <CommandGroup>
-            <CommandList>
-              {sampleHeroes.map((hero) => (
-                <CommandItem
-                  key={hero.id}
-                  onSelect={() => {
-                    updateHero(player, hero); // Pastikan fungsi ini dipanggil
-                    setOpen(false); // Tutup popover setelah memilih
-                  }}
-                  className="text-sm"
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      player.hero.id === hero.id ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {hero.name}
-                </CommandItem>
-              ))}
-            </CommandList>
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-// Role Selection Component
-function RoleSelect({
-  player,
-  updateRole,
-}: {
-  player: Player;
-  updateRole: (role: string) => void;
-}) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between h-8 text-xs"
-        >
-          {player.hero.role}
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandList>
-            {roles.map((role) => (
-              <CommandItem
-                key={role.id}
-                onSelect={() => {
-                  updateRole(role.name);
-                  setOpen(false);
-                }}
-                className="text-sm"
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    player.hero.role === role.name ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {role.name}
-              </CommandItem>
-            ))}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
   );
 }
