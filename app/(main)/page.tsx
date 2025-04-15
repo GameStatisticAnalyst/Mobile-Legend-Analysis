@@ -28,8 +28,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Analysis {
+  id: string;
+  tags: string[];
+  date: string;
+  [key: string]: any; // Add additional properties as needed
+}
+
 export default function Home(): ReactElement {
-  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(
+    null
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [sortBy, setSortBy] = useState("latest");
   const [filterTag, setFilterTag] = useState("all");
@@ -50,7 +59,7 @@ export default function Home(): ReactElement {
     if (heroTitle) {
       const text = heroTitle.textContent;
       heroTitle.innerHTML = "";
-      text.split("").forEach((char) => {
+      text?.split("").forEach((char) => {
         const charSpan = document.createElement("span");
         charSpan.classList.add("char");
         charSpan.textContent = char === " " ? "\u00A0" : char;
@@ -59,7 +68,7 @@ export default function Home(): ReactElement {
     }
   }, []);
 
-  const handleAnalysisClick = (analysis) => {
+  const handleAnalysisClick = (analysis: Analysis): void => {
     setSelectedAnalysis(analysis);
     setDialogOpen(true);
   };
@@ -67,7 +76,7 @@ export default function Home(): ReactElement {
   // Get unique tags from all analysis
   const allTags = [
     "all",
-    ...new Set(analysisData.flatMap((analysis) => analysis.tags)),
+    ...Array.from(new Set(analysisData.flatMap((analysis) => analysis.tags))),
   ];
 
   // Sort and filter analysis data
@@ -77,9 +86,9 @@ export default function Home(): ReactElement {
     )
     .sort((a, b) => {
       if (sortBy === "latest") {
-        return new Date(b.date) - new Date(a.date);
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
       } else if (sortBy === "oldest") {
-        return new Date(a.date) - new Date(b.date);
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
       }
       return 0;
     });
@@ -87,8 +96,8 @@ export default function Home(): ReactElement {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <section className="relative lg:px-8 py-12 overflow-hidden">
-        <div className="container mx-auto px-4">
+      <section className="relative py-12 overflow-hidden">
+        <div className="container mx-auto ">
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="lg:w-1/2 space-y-6 animate-fade-in">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
@@ -108,12 +117,12 @@ export default function Home(): ReactElement {
                 </Button>
                 <Link href="/guides">
                   <Button
-                  variant="outline"
-                  size="lg"
-                  className="rounded-full px-8 py-6 border-slate-200 dark:border-slate-700"
-                >
-                  Pelajari Lebih Lanjut
-                </Button>
+                    variant="outline"
+                    size="lg"
+                    className="rounded-full w-full  px-8 py-6 border-slate-200 dark:border-slate-700"
+                  >
+                    Pelajari Lebih Lanjut
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -126,16 +135,14 @@ export default function Home(): ReactElement {
                     alt="Mobile Legends Analysis"
                     width={500}
                     height={300}
-                    className="object-cover"
+                    className="object-cover w-full h-full transition-transform duration-300 transform hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
                     <div className="text-white">
                       <h3 className="text-xl font-bold">
                         Mobile Legend Tournament 2025
                       </h3>
-                      <p className="text-white/80">
-                        ONIC vs RRQ - Match Analysis
-                      </p>
+                      <p className="text-white/80">Comming Soon!</p>
                     </div>
                   </div>
                 </div>
@@ -280,7 +287,7 @@ export default function Home(): ReactElement {
       </section> */}
 
       {/* Features Section */}
-      <section className="lg:px-8 py-12 bg-gradient-to-r from-blue-600/10 to-purple-600/10 backdrop-blur-md rounded text-gray-900 dark:text-gray-100">
+      <section className="py-12 bg-gradient-to-r from-blue-600/10 to-purple-600/10 backdrop-blur-md rounded text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -341,8 +348,8 @@ export default function Home(): ReactElement {
       </section>
 
       {/* Community Section */}
-      <section className="lg:px-8 py-12">
-        <div className="container mx-auto px-4">
+      <section className="py-12 text-gray-900 dark:text-gray-100">
+        <div className="container mx-auto ">
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="lg:w-1/2 space-y-6 animate-fade-in">
               <h2 className="text-3xl md:text-4xl font-bold">
@@ -384,12 +391,9 @@ export default function Home(): ReactElement {
                 <Button
                   size="lg"
                   variant="default"
-                  className="rounded-full px-8 py-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  className="rounded-full w-full px-8 py-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                 >
-                  <Link
-                    href="/contributors"
-                    className="flex items-center w-full"
-                  >
+                  <Link href="/contributors" className="flex items-center ">
                     Lihat Kontributor
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
