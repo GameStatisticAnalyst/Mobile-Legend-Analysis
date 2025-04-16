@@ -1,8 +1,7 @@
 "use client";
 
 import type React from "react";
-
-import { useState, useRef, useEffect, useReducer } from "react";
+import { useState, useRef, useEffect  , useReducer } from "react";
 import Button from "@/components/ui/button";
 import TeamCard from "./teamCard";
 import TeamStatusCard from "./tableCard";
@@ -433,7 +432,6 @@ export default function MatchAnalysisPage() {
               </Button>
             </div>
           </div>
-
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
@@ -443,10 +441,8 @@ export default function MatchAnalysisPage() {
               <TabsTrigger value="analysis">Analysis</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
-
             <TabsContent value="analysis" className="mt-6 space-y-6 ">
               <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
-                {/* Blue Team - TeamA, darkMode, isEditMode, eventTypes */}
                 <TeamCard
                   team={teamA}
                   darkMode={darkMode}
@@ -720,7 +716,6 @@ export default function MatchAnalysisPage() {
                 </CardContent>
               </Card>
             </TabsContent>
-
             <TabsContent value="settings" className="mt-6 space-y-6">
               <Card
                 className={

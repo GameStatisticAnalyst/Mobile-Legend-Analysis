@@ -1,5 +1,53 @@
-// Dummy data for tournaments
-export const upcomingTournaments = [
+export interface UpcomingTournament {
+  id: string;
+  name: string;
+  logo: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  region: string; 
+  teams: number;
+  prizePool: string;
+  status: "upcoming";
+  description: string;
+  organizer: string;
+  type: string;
+}
+
+export interface OngoingTournament {
+  id: string;
+  name: string;
+  logo: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  region: string; 
+  teams: number;
+  prizePool: string;
+  status: "ongoing";
+  description: string;
+  organizer: string;
+  type: string;
+}
+
+export interface PastTournament {
+  id: string;
+  name: string;
+  logo: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  region: string; 
+  teams: number;
+  prizePool: string;
+  status: "completed";
+  description: string;
+  organizer: string;
+  type: string;
+  winner: string;
+}
+
+export const upcomingTournaments: UpcomingTournament[] = [
   {
     id: "1",
     name: "MPL ID Season 13",
@@ -7,6 +55,7 @@ export const upcomingTournaments = [
     startDate: "2024-04-15",
     endDate: "2024-06-10",
     location: "Jakarta, Indonesia",
+    region: "Southeast Asia", 
     teams: 10,
     prizePool: "$300,000",
     status: "upcoming",
@@ -22,6 +71,7 @@ export const upcomingTournaments = [
     startDate: "2024-04-20",
     endDate: "2024-06-15",
     location: "Manila, Philippines",
+    region: "Southeast Asia", 
     teams: 8,
     prizePool: "$250,000",
     status: "upcoming",
@@ -37,6 +87,7 @@ export const upcomingTournaments = [
     startDate: "2024-12-01",
     endDate: "2024-12-15",
     location: "Singapore",
+    region: "Southeast Asia", 
     teams: 16,
     prizePool: "$800,000",
     status: "upcoming",
@@ -52,16 +103,18 @@ export const upcomingTournaments = [
     startDate: "2024-07-10",
     endDate: "2024-07-20",
     location: "Kuala Lumpur, Malaysia",
+    region: "Southeast Asia", 
     teams: 12,
     prizePool: "$300,000",
     status: "upcoming",
-    description: "The Mobile Legends Southeast Asia Cup brings together the best teams from the SEA region.",
+    description:
+      "The Mobile Legends Southeast Asia Cup brings together the best teams from the SEA region.",
     organizer: "Moonton",
     type: "Regional Championship",
   },
-]
+];
 
-export const ongoingTournaments = [
+export const ongoingTournaments: OngoingTournament[] = [
   {
     id: "5",
     name: "MDL Season 7",
@@ -69,16 +122,18 @@ export const ongoingTournaments = [
     startDate: "2024-03-15",
     endDate: "2024-04-10",
     location: "Jakarta, Indonesia",
+    region: "Southeast Asia", 
     teams: 16,
     prizePool: "$100,000",
     status: "ongoing",
-    description: "The Mobile Legends Development League for aspiring professional teams in Indonesia.",
+    description:
+      "The Mobile Legends Development League for aspiring professional teams in Indonesia.",
     organizer: "Moonton",
     type: "Development League",
   },
-]
+];
 
-export const pastTournaments = [
+export const pastTournaments: PastTournament[] = [
   {
     id: "6",
     name: "MPL ID Season 12",
@@ -86,10 +141,12 @@ export const pastTournaments = [
     startDate: "2023-08-18",
     endDate: "2023-10-22",
     location: "Jakarta, Indonesia",
+    region: "Southeast Asia", 
     teams: 10,
     prizePool: "$300,000",
     status: "completed",
-    description: "The 12th season of Indonesia's premier Mobile Legends tournament.",
+    description:
+      "The 12th season of Indonesia's premier Mobile Legends tournament.",
     organizer: "Moonton",
     type: "Regular Season",
     winner: "ONIC Esports",
@@ -101,6 +158,7 @@ export const pastTournaments = [
     startDate: "2023-01-01",
     endDate: "2023-01-15",
     location: "Jakarta, Indonesia",
+    region: "Southeast Asia", 
     teams: 16,
     prizePool: "$800,000",
     status: "completed",
@@ -116,10 +174,12 @@ export const pastTournaments = [
     startDate: "2023-08-20",
     endDate: "2023-10-29",
     location: "Manila, Philippines",
+    region: "Southeast Asia", 
     teams: 8,
     prizePool: "$250,000",
     status: "completed",
-    description: "The 12th season of the Philippines' premier Mobile Legends tournament.",
+    description:
+      "The 12th season of the Philippines' premier Mobile Legends tournament.",
     organizer: "Moonton",
     type: "Regular Season",
     winner: "AP Bren",
@@ -131,6 +191,7 @@ export const pastTournaments = [
     startDate: "2023-06-08",
     endDate: "2023-06-18",
     location: "Phnom Penh, Cambodia",
+    region: "Southeast Asia", 
     teams: 12,
     prizePool: "$300,000",
     status: "completed",
@@ -139,4 +200,4 @@ export const pastTournaments = [
     type: "Regional Championship",
     winner: "Blacklist International",
   },
-]
+];

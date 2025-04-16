@@ -9,7 +9,7 @@ export function Card({ className = "", ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "bg-white/90 dark:bg-gray-900 text-gray-700 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm",
+        "bg-white/90 dark:bg-gray-900 text-gray-700 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm p-6",
         className
       )}
       {...props}
@@ -20,7 +20,7 @@ export function Card({ className = "", ...props }: CardProps) {
 export function CardHeader({ className = "", ...props }: CardProps) {
   return (
     <div
-      className={cn("flex flex-col space-y-1.5 p-6", className)}
+      className={cn("flex flex-col space-y-1.5 mb-4", className)}
       {...props}
     />
   );

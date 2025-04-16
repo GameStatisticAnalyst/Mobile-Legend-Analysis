@@ -1,15 +1,19 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import Avatar from "@/components/ui/avatar"
-import Link from "next/link"
-import Image from "next/image"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
+import Image from "next/image";
 
-import {getTournamentData} from './placeholder'
+import { getTournamentData } from "./placeholder";
 
-export default function TournamentDetail({ params }: { params: { id: string } }) {
-  const tournament = getTournamentData(params.id)
-  
+export default function TournamentDetail({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const tournament = getTournamentData(params.id);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="space-y-8">
@@ -58,27 +62,21 @@ export default function TournamentDetail({ params }: { params: { id: string } })
               <CardTitle>Tournament Details</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-500 dark:text-gray-400">
-                    Organizer
-                  </span>
-                  <span className="font-medium">{tournament.organizer}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500 dark:text-gray-400">
-                    Status
-                  </span>
-                  <span className="font-medium capitalize">
-                    {tournament.status}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500 dark:text-gray-400">
-                    Teams
-                  </span>
-                  <span className="font-medium">{tournament.teams.length}</span>
-                </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500 dark:text-gray-400">
+                  Organizer
+                </span>
+                <span className="font-medium">{tournament.organizer}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500 dark:text-gray-400">Status</span>
+                <span className="font-medium capitalize">
+                  {tournament.status}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500 dark:text-gray-400">Teams</span>
+                <span className="font-medium">{tournament.teams.length}</span>
               </div>
             </CardContent>
           </Card>
@@ -88,7 +86,6 @@ export default function TournamentDetail({ params }: { params: { id: string } })
               <CardTitle>Schedule</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-500 dark:text-gray-400">
                     Start Date
@@ -107,7 +104,6 @@ export default function TournamentDetail({ params }: { params: { id: string } })
                   </span>
                   <span className="font-medium">8 Weeks</span>
                 </div>
-              </div>
             </CardContent>
           </Card>
 
@@ -116,7 +112,6 @@ export default function TournamentDetail({ params }: { params: { id: string } })
               <CardTitle>Prize Distribution</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-500 dark:text-gray-400">
                     1st Place
@@ -147,7 +142,6 @@ export default function TournamentDetail({ params }: { params: { id: string } })
                   </span>
                   <span className="font-medium">$15,000</span>
                 </div>
-              </div>
             </CardContent>
           </Card>
         </div>
@@ -174,12 +168,15 @@ export default function TournamentDetail({ params }: { params: { id: string } })
                       key={team.id}
                       className="flex flex-col items-center p-4 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                     >
-                      <Avatar
-                        className="w-16 h-16 mb-3"
-                        src={team.logo}
-                        alt={team.name}
-                        fallback={team.name.substring(0, 2)}
-                      />
+                      <Avatar className="w-16 h-16 mb-3">
+                        <AvatarImage
+                          src={team.logo || "/placeholder.svg"}
+                          alt={team.name}
+                        />
+                        <AvatarFallback>
+                          {team.name.substring(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
                       <div className="font-medium text-center">{team.name}</div>
                     </Link>
                   ))}

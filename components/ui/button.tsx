@@ -16,9 +16,8 @@ export interface ButtonProps
     | "secondary"
     | "ghost"
     | "link";
-  size?: "default" | "sm" | "lg" | "icon";
+  size?: "default" | "sm" |"md" | "lg" | "icon";
   isFullWidth?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -34,15 +33,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon,
       children,
       disabled,
-      onClick, 
+      onClick,
       ...props
-    },
-    ref
-  ) => {
-    const isDisabled = disabled || isLoading;
+    }: ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>,
+    ref: React.ForwardedRef<HTMLButtonElement>
+  ): React.ReactElement | null => {
+    const isDisabled: boolean = disabled || isLoading;
 
     const baseStyles =
-      "inline-flex whitespace-nowrap items-center justify-center rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+      "inline-flex items-center justify-center whitespace-nowrap rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
 
     const variants = {
       default: "bg-blue-500 text-white hover:bg-blue-600",
@@ -57,13 +56,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const sizes = {
       default: "h-10 px-4 py-2",
       sm: "h-9 px-3",
+      md: "h-10 px-4",
       lg: "h-11 px-8",
       icon: "h-10 w-10",
     };
 
-    const fullWidth = isFullWidth ? "w-full" : "";
+    const fullWidth: "w-full" | "" = isFullWidth ? "w-full" : "";
 
-    const classes = cn(
+    const classes: string = cn(
       baseStyles,
       variants[variant],
       sizes[size],
@@ -71,16 +71,30 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className
     );
 
+    const content: React.ReactElement = (
+      <>
+        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {!isLoading && leftIcon && <span className="mr-2">{leftIcon}</span>}
+        {children}
+        {!isLoading && rightIcon && <span className="ml-2">{rightIcon}</span>}
+      </>
+    );
+
     if (asChild) {
+      if (
+        React.isValidElement(children) &&
+        typeof children.type === "string" &&
+        children.type.toLowerCase() === "button"
+      ) {
+        console.error(
+          "❌ Error: You cannot use <button> as a child of <Button asChild>. It causes nested <button>, which is invalid HTML."
+        );
+        return null;
+      }
+
       return (
-        <Slot
-          className={classes}
-          ref={ref}
-          disabled={isDisabled}
-          onClick={onClick} 
-          {...props}
-        >
-          {children}
+        <Slot className={classes} ref={ref} {...props}>
+          {content}
         </Slot>
       );
     }
@@ -90,17 +104,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={classes}
         ref={ref}
         disabled={isDisabled}
-        onClick={onClick} 
+        onClick={onClick}
         {...props}
       >
-        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {!isLoading && leftIcon && <span className="mr-2">{leftIcon}</span>}
-        {children}
-        {!isLoading && rightIcon && <span className="ml-2">{rightIcon}</span>}
+        {content}
       </button>
     );
   }
 );
-Button.displayName = "Button";
 
+Button.displayName = "Button";
 export default Button;
