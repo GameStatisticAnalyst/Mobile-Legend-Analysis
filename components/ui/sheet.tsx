@@ -19,7 +19,15 @@ const Sheet = React.forwardRef<
 ));
 Sheet.displayName = SheetPrimitive.Root.displayName;
 
-const SheetTrigger = SheetPrimitive.Trigger;
+const SheetTrigger = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Trigger>
+>(({ children, ...props }, ref) => (
+  <SheetPrimitive.Trigger ref={ref} {...props}>
+    {children}
+  </SheetPrimitive.Trigger>
+));
+SheetTrigger.displayName = SheetPrimitive.Trigger.displayName;
 
 const SheetClose = SheetPrimitive.Close;
 

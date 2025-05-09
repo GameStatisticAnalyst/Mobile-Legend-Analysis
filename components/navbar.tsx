@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
+import anime from "animejs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Button from "@/components/ui/button";
 import { Menu, Search, X } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeToggle from "@/components/theme-provider";
-import anime from "animejs";
+
+import Button from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Input from "@/components/ui/input";
 
-interface menuProps {
+interface MenuProps {
   name: string;
   href: string;
 }
 
-const MenuNav: menuProps[] = [
+const MenuNav: MenuProps[] = [
   {
     name: "Analysis",
     href: "/analysis",
@@ -32,21 +33,22 @@ const MenuNav: menuProps[] = [
   },
 ];
 
-export default function Navbar() {
-  const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+export default function Navbar(): JSX.Element {
+  const pathname: string = usePathname();
 
-  useEffect(() => {
-    const handleScroll = () => {
+  const [scrolled, setScrolled] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
+  useEffect((): (() => void) => {
+    const handleScroll = (): void => {
       setScrolled(window.scrollY > 10);
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return (): void => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
+  useEffect((): void => {
     if (mobileMenuOpen) {
       anime({
         targets: ".mobile-menu-item",
@@ -59,38 +61,38 @@ export default function Navbar() {
     }
   }, [mobileMenuOpen]);
 
-  const isActive = (path: string) => pathname === path;
-  
+  const isActive: (path: string) => boolean = (path: string): boolean =>
+    pathname === path;
+
   return (
     <header
-      className={`sticky top-0 z-50 w-full mx-auto md:px-13 lg:px-50 transition-all duration-300 ${
-        scrolled ? " backdrop-blur-md shadow-sm" : "bg-transparent rounded"
+      className={`sticky top-0 z-50 w-full mx-auto md:px-13 2xl:px-50 transition-all duration-300 ${
+        scrolled ? "backdrop-blur-md shadow-sm" : "bg-transparent rounded"
       }`}
     >
       <div className="flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center space-x-2">
-            {/* <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-              <span className="text-white font-bold">ML</span>
-            </div> */}
             <span className="hidden font-bold text-xl sm:inline-block">
               MLAnalysis
             </span>
           </Link>
           <nav className="hidden md:flex items-center space-x-1 text-sm font-medium">
-            {MenuNav.map((items: menuProps) => (
-              <Link
-                href={items.href}
-                key={items.name}
-                className={`px-4 py-2 rounded-full transition-colors ${
-                  isActive(items.href)
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
-                    : "hover:bg-blue-100 dark:hover:bg-slate-800"
-                }`}
-              >
-                {items.name}
-              </Link>
-            ))}
+            {MenuNav.map(
+              (items: MenuProps): JSX.Element => (
+                <Link
+                  href={items.href}
+                  key={items.name}
+                  className={`px-4 py-2 rounded-full transition-colors ${
+                    isActive(items.href)
+                      ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                      : "hover:bg-blue-100 dark:hover:bg-slate-800"
+                  }`}
+                >
+                  {items.name}
+                </Link>
+              )
+            )}
           </nav>
         </div>
 
@@ -107,6 +109,7 @@ export default function Navbar() {
           <ThemeToggle />
           <Button
             variant="default"
+            asChild
             className="hidden md:inline-flex rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
             <Link href="/account" className="text-white">
@@ -117,13 +120,13 @@ export default function Navbar() {
 
         <div className="flex items-center md:hidden">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger>
+            <SheetTrigger asChild>
               <Button
                 variant="ghost"
+                leftIcon={<Menu className="h-5 w-5" />}
                 className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
               >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
+                Toggle Menu
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-full sm:w-[350px] pr-5">
@@ -131,7 +134,7 @@ export default function Navbar() {
                 <Link
                   href="/"
                   className="flex items-center space-x-2"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(): void => setMobileMenuOpen(false)}
                 >
                   <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
                     <span className="text-white font-bold">ML</span>
@@ -140,8 +143,8 @@ export default function Navbar() {
                 </Link>
                 <Button
                   variant="ghost"
-                  size="icon"
-                  onClick={() => setMobileMenuOpen(false)}
+                  // size="icon"
+                  onClick={(): void => setMobileMenuOpen(false)}
                   className="rounded-full"
                 >
                   <X className="h-5 w-5" />
@@ -157,26 +160,28 @@ export default function Navbar() {
                 />
               </div>
               <nav className="flex flex-col space-y-1">
-                {MenuNav.map((items: menuProps) => (
-                  <Link
-                    href={items.href}
-                    key={items.name}
-                    className={`mobile-menu-item z-50 py-3 rounded-xl transition-colors ${
-                      isActive(items.href)
-                        ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
-                        : "hover:bg-slate-100 dark:hover:bg-slate-800"
-                    }`}
-                    onClick={(): void => setMobileMenuOpen(false)}
-                  >
-                    {items.name}
-                  </Link>
-                ))}
+                {MenuNav.map(
+                  (items: MenuProps): JSX.Element => (
+                    <Link
+                      href={items.href}
+                      key={items.name}
+                      className={`mobile-menu-item z-50 py-3 rounded-xl transition-colors ${
+                        isActive(items.href)
+                          ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                          : "hover:bg-slate-100 dark:hover:bg-slate-800"
+                      }`}
+                      onClick={(): void => setMobileMenuOpen(false)}
+                    >
+                      {items.name}
+                    </Link>
+                  )
+                )}
               </nav>
               <div className="border-t my-2"></div>
               <div className="space-y-3 mt-6">
                 <Button
                   className="mobile-menu-item w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(): void => setMobileMenuOpen(false)}
                 >
                   <Link href="/account">Masuk</Link>
                 </Button>

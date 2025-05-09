@@ -12,7 +12,7 @@ import Link from "next/link"
 // import authStore from "@/config/store/authStore"
 import navigation from "./admin-menu"
 import { ChevronLeft, Menu, Bell, Search, User, Settings, LogOut } from "lucide-react"
-import Avatar from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   DropdownMenu,
@@ -27,10 +27,6 @@ export default function AdminLayout({ children }: { children: ReactNode }): Reac
   const pathname: string = usePathname()
   const router = useRouter()
 
-  // const context = useContext(NotificationContext)
-  // const { setNotification } = context
-
-  // const { data, reset, token, isLogin, loadingHydration } = authStore()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [submenuOpen, setSubmenuOpen] = useState(false)
 
@@ -85,7 +81,7 @@ export default function AdminLayout({ children }: { children: ReactNode }): Reac
                   <div className={`flex items-center gap-2 ${isCollapsed ? "justify-center" : null}`}>
                     {!isCollapsed && <span className="text-xl font-semibold dark:text-white">ML Analys</span>}
                     <button
-                      onClick={() => setIsCollapsed(!isCollapsed)}
+                      onClick={():void => setIsCollapsed(!isCollapsed)}
                       className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       {isCollapsed ? (
@@ -111,7 +107,7 @@ export default function AdminLayout({ children }: { children: ReactNode }): Reac
                             )}
                             {section.items?.map((item): ReactElement => {
                               const isActive: boolean = pathname === item.href
-                              const hasSubMenu: boolean = item.submenu && item.submenu.length > 0
+                              const hasSubMenu = item.submenu && item.submenu.length > 0
                               return (
                                 <div key={item.title}>
                                   <MenuLink item={item} isActive={isActive} />
@@ -119,7 +115,7 @@ export default function AdminLayout({ children }: { children: ReactNode }): Reac
                                     <div className="ml-2">
                                       {submenuOpen && (
                                         <div>
-                                          {item.submenu.map(
+                                          {item?.submenu && item?.submenu.map(
                                             (subItem): ReactElement => (
                                               <MenuLink key={subItem.title} item={subItem} isActive={pathname === subItem.href} />
                                             ),
@@ -146,13 +142,13 @@ export default function AdminLayout({ children }: { children: ReactNode }): Reac
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <div className="relative h-10 w-10 overflow-hidden rounded-full">
-                                  <Avatar
-                                  src="/placeholder.svg" alt="Admin User" className="object-cover" fallback="Admin User" 
-                                    // src={data.images}
-                                    // alt={data.fullname}
-                                    // className="object-cover"
-                                    // fallback={data.fullname}
-                                  />
+                                  {/* <Avatar
+                                    src="/placeholder.svg" alt="Admin User" className="object-cover" fallback="Admin User" 
+                                    src={data.images}
+                                    alt={data.fullname}
+                                    className="object-cover"
+                                    fallback={data.fullname}
+                                  /> */}
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent side="right">
@@ -163,7 +159,7 @@ export default function AdminLayout({ children }: { children: ReactNode }): Reac
                           ) : (
                             <>
                               <div className="relative h-10 w-10 overflow-hidden rounded-full">
-                                <Avatar src="/placeholder.svg" alt="Admin User" className="object-cover" fallback="Admin User" />
+                                {/* <Avatar src="/placeholder.svg" alt="Admin User" className="object-cover" fallback="Admin User" /> */}
                                 {/* <Avatar src={data.images} alt={data.fullname} className="object-cover" fallback={data.fullname} /> */}
                               </div>
                               <div className="text-left">

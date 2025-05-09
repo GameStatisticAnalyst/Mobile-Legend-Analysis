@@ -186,7 +186,7 @@ export default function AnalysisPage(): ReactElement {
             <div className="w-full lg:w-1/4 space-y-6">
               {/* Filters */}
               <Card className="border-gray-200 dark:border-gray-700 shadow-sm bg-white/90 dark:bg-gray-800/90">
-                <CardContent className="p-6">
+                <CardContent className="">
                   <div className="flex mt-4 items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">Filters</h3>
                     <Button
@@ -263,7 +263,7 @@ export default function AnalysisPage(): ReactElement {
 
               {/* Popular Tags */}
               <Card className="border-gray-200 dark:border-gray-700 shadow-sm bg-white/90 dark:bg-gray-800/90">
-                <CardContent className="p-6">
+                <CardContent className="">
                   <h3 className="text-lg font-semibold mb-4 mt-4">
                     Popular Tags
                   </h3>

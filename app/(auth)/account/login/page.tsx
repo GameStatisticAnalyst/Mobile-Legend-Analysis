@@ -48,7 +48,6 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation
     if (!formData.email || !formData.password) {
       setError("Email and password are required");
       return;
@@ -191,7 +190,7 @@ export default function LoginPage() {
               variant="ghost"
               size="icon"
               className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={(): void => setShowPassword(!showPassword)}
               disabled={loading}
             >
               {showPassword ? (

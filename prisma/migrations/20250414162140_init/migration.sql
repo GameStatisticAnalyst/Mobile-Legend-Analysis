@@ -5,7 +5,8 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "emailVerified" DATETIME,
     "password" TEXT,
-    "image" TEXT
+    "image" TEXT,
+    "role" TEXT NOT NULL DEFAULT 'user'
 );
 
 -- CreateTable

@@ -1,4 +1,4 @@
-import { ComponentType } from "react"
+import { ComponentType } from "react";
 
 import {
   BarChart3,
@@ -8,36 +8,39 @@ import {
   Shield,
   Trophy,
   Users,
-} from "lucide-react"
+} from "lucide-react";
 
 interface SubItem {
-  title: string
-  href?: string
-  icon?: ComponentType<{ className?: string }>
+  title: string;
+  href?: string;
+  icon?: ComponentType<{ className?: string }>;
 }
 
 interface MenuItem {
-  title: string
-  href?: string
-  icon?: ComponentType<{ className?: string }>
-  submenu?: SubItem[]
+  title: string;
+  href?: string;
+  icon?: ComponentType<{ className?: string }>;
+  submenu?: SubItem[];
 }
 
 interface FolderMenu {
-  title: string
-  items: MenuItem[]
+  title: string;
+  items: MenuItem[];
 }
 
-const navigation:FolderMenu[] = [
-    {title: "Dashboard",items:[
+const navigation: FolderMenu[] = [
+  {
+    title: "Dashboard",
+    items: [
       { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
       { title: "Analysis", href: "/admin/analysis", icon: BarChart3 },
-    { title: "Teams", href: "/admin/teams", icon: Shield },
-    { title: "Tournaments", href: "/admin/tournaments", icon: Trophy },
-    { title: "Users", href: "/admin/users", icon: Users },
-    { title: "Reports", href: "/admin/reports", icon: FileText },
-    { title: "Settings", href: "/admin/settings", icon: Settings },
-    ]},
-  ]
+      { title: "Teams", href: "/admin/teams", icon: Shield },
+      { title: "Tournaments", href: "/admin/tournaments", icon: Trophy },
+      { title: "Users", href: "/admin/users", icon: Users },
+      { title: "Reports", href: "/admin/reports", icon: FileText },
+      { title: "Settings", href: "/admin/settings", icon: Settings },
+    ],
+  },
+];
 
-  export default navigation
+export default navigation;

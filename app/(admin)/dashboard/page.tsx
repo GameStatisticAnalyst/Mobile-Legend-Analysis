@@ -1,7 +1,13 @@
+"use client";
+
+import React, { createElement, ReactElement } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import AdminLayout from "@/layout/admin-layout";
 import StatCard from "@/components/dashboard/stat-card";
 import RecentActivity from "@/components/dashboard/recent-activities";
 import RecentAnalyses from "@/components/dashboard/recent-analyses";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   BarChart3,
   FileText,
@@ -14,12 +20,7 @@ import {
   Calendar,
   Activity,
 } from "lucide-react";
-import type {
-  Activity as ActivityType,
-  AdminAnalysis,
-  Stat,
-} from "@/types/admin";
-import Link from "next/link";
+
 import {
   Card,
   CardContent,
@@ -29,209 +30,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Button from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Avatar from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import Image from "next/image";
-
-// import {
-//   quickActions,
-//   recentActivities,
-//   recentAnalyses,
-//   stats,
-//   upcomingTournaments,
-// } from "./placeholder";
-
-const stats: Stat[] = [
-  {
-    title: "Total Analyses",
-    value: "2,345",
-    icon: <BarChart3 className="h-4 w-4 text-blue-600" />,
-    description: "Total analyses created",
-    trend: "up",
-    trendValue: "12% from last month",
-  },
-  {
-    title: "Total Users",
-    value: "1,234",
-    icon: <Users className="h-4 w-4 text-emerald-600" />,
-    description: "Active users on platform",
-    trend: "up",
-    trendValue: "8% from last month",
-  },
-  {
-    title: "Teams",
-    value: "56",
-    icon: <Shield className="h-4 w-4 text-purple-600" />,
-    description: "Teams registered",
-    trend: "up",
-    trendValue: "3% from last month",
-  },
-  {
-    title: "Reports",
-    value: "12",
-    icon: <FileText className="h-4 w-4 text-amber-600" />,
-    description: "Pending reports",
-    trend: "down",
-    trendValue: "5% from last month",
-  },
-];
-
-const recentActivities: ActivityType[] = [
-  {
-    id: "1",
-    userName: "John Doe",
-    userAvatar: "/placeholder.svg",
-    action: "Created a new analysis for ONIC vs RRQ",
-    time: "2 hours ago",
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-  },
-  {
-    id: "2",
-    userName: "Jane Smith",
-    userAvatar: "/placeholder.svg",
-    action: "Updated team information for EVOS",
-    time: "5 hours ago",
-    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
-  },
-  {
-    id: "3",
-    userName: "Mike Johnson",
-    userAvatar: "/placeholder.svg",
-    action: "Added a new tournament: MPL Season 12",
-    time: "Yesterday",
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-  },
-  {
-    id: "4",
-    userName: "Sarah Williams",
-    userAvatar: "/placeholder.svg",
-    action: "Commented on ONIC vs Alter Ego analysis",
-    time: "2 days ago",
-    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-  },
-];
-
-const recentAnalyses: AdminAnalysis[] = [
-  {
-    id: "1",
-    date: "2024-02-09",
-    teamA: {
-      id: "1",
-      name: "ONIC",
-      logo: "/placeholder.svg?height=32&width=32",
-    },
-    teamB: {
-      id: "2",
-      name: "RRQ",
-      logo: "/placeholder.svg?height=32&width=32",
-    },
-    description: "Final match between ONIC and RRQ in MPL Season 11",
-    tags: ["MPL", "Final", "Season 11"],
-    createdBy: {
-      id: "1",
-      name: "MLAnalyst",
-    },
-    status: "published",
-  },
-  {
-    id: "2",
-    date: "2024-02-08",
-    teamA: {
-      id: "3",
-      name: "EVOS",
-      logo: "/placeholder.svg?height=32&width=32",
-    },
-    teamB: {
-      id: "4",
-      name: "Alter Ego",
-      logo: "/placeholder.svg?height=32&width=32",
-    },
-    description: "Semi-final match of MDL Season 5",
-    tags: ["MDL", "Semi-Final", "Season 5"],
-    createdBy: {
-      id: "2",
-      name: "ProAnalyst",
-    },
-    status: "published",
-  },
-  {
-    id: "3",
-    date: "2024-02-07",
-    teamA: {
-      id: "5",
-      name: "Aura",
-      logo: "/placeholder.svg?height=32&width=32",
-    },
-    teamB: {
-      id: "6",
-      name: "Geek Fam",
-      logo: "/placeholder.svg?height=32&width=32",
-    },
-    description: "Regular season match with unexpected strategies",
-    tags: ["MPL", "Regular Season", "Meta Analysis"],
-    createdBy: {
-      id: "3",
-      name: "MetaExpert",
-    },
-    status: "draft",
-  },
-];
-
-const upcomingTournaments = [
-  {
-    id: "1",
-    name: "MPL Season 12",
-    shortName: "MPL",
-    startDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-    color: "amber",
-  },
-  {
-    id: "2",
-    name: "MDL Season 6",
-    shortName: "MDL",
-    startDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000),
-    color: "blue",
-  },
-  {
-    id: "3",
-    name: "MSC 2024",
-    shortName: "MSC",
-    startDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000),
-    color: "purple",
-  },
-];
-
-const quickActions = [
-  {
-    title: "Create Analysis",
-    description: "Start a new match analysis",
-    icon: <Plus className="h-5 w-5" />,
-    href: "/admin/analysis/create",
-    color: "bg-gradient-to-br from-blue-500 to-blue-600",
-  },
-  {
-    title: "Recent Drafts",
-    description: "Continue your work",
-    icon: <Clock className="h-5 w-5" />,
-    href: "/admin/analysis?filter=draft",
-    color: "bg-gradient-to-br from-purple-500 to-purple-600",
-  },
-  {
-    title: "Quick Reports",
-    description: "Generate insights",
-    icon: <Zap className="h-5 w-5" />,
-    href: "/admin/reports/generate",
-    color: "bg-gradient-to-br from-emerald-500 to-emerald-600",
-  },
-  {
-    title: "Manage Teams",
-    description: "Update team data",
-    icon: <Shield className="h-5 w-5" />,
-    href: "/admin/teams",
-    color: "bg-gradient-to-br from-amber-500 to-amber-600",
-  },
-];
+import {
+  quickActions,
+  recentActivities,
+  recentAnalyses,
+  stats,
+  upcomingTournaments,
+} from "./placeholder";
 
 // Helper function to get greeting based on time of day
 function getGreeting(): string {
@@ -242,7 +48,8 @@ function getGreeting(): string {
 }
 
 export default async function AdminDashboard() {
-  const greeting = getGreeting();
+  // const { data: session, status } = useSession();
+  const greeting: string = getGreeting();
   return (
     <AdminLayout>
       <div className="p-6 max-w-7xl mx-auto">
@@ -285,15 +92,14 @@ export default async function AdminDashboard() {
             {quickActions.map((action, index) => (
               <Link href={action.href} key={index}>
                 <Card className="h-full hover:shadow-md transition-shadow border-0 shadow">
-                  <CardContent className="p-6">
+                  <CardContent>
                     <div
-                      className={`${action.color} text-white p-3 rounded-lg inline-flex mb-4 mt-4`}
+                      className={`${action.color} p-3 rounded-lg inline-flex mb-4`}
                     >
-                      {/* <action.icon className="h-4 w-4 text-blue-600"/> */}
-                      {action.icon}
+                      {action.icon && <action.icon className="h-4 w-4 " />}
                     </div>
                     <h3 className="font-medium">{action.title}</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-500">
                       {action.description}
                     </p>
                   </CardContent>
@@ -312,7 +118,7 @@ export default async function AdminDashboard() {
             </Button>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat, index) => (
+            {/* {stats.map((stat, index) => (
               <StatCard
                 key={index}
                 title={stat.title}
@@ -322,7 +128,7 @@ export default async function AdminDashboard() {
                 trend={stat.trend}
                 trendValue={stat.trendValue}
               />
-            ))}
+            ))} */}
           </div>
         </div>
 
@@ -341,15 +147,14 @@ export default async function AdminDashboard() {
 
           <TabsContent value="overview" className="mt-0">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Analytics Card */}
               <Card className="col-span-1 lg:col-span-2 overflow-hidden border-0 shadow">
-                <CardHeader className="bg-gradient-to-r from-blue-600/90 to-purple-600/90 text-white mb-8">
+                <CardHeader className="bg-gradient-to-r from-blue-600/90 to-purple-600/90 text-white mb-8 px-3 py-2 rounded-lg">
                   <CardTitle>Weekly Analytics</CardTitle>
                   <CardDescription className="text-white/80">
                     Your platform performance this week
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-6">
+                <CardContent>
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
@@ -401,13 +206,13 @@ export default async function AdminDashboard() {
 
           <TabsContent value="tournaments" className="mt-0">
             <Card className="overflow-hidden border-0 shadow">
-              <CardHeader className="bg-gradient-to-r from-amber-600/90 to-red-600/90 text-white">
+              <CardHeader className="bg-gradient-to-r from-amber-600/90 to-red-600/90 text-white px-3 py-2 rounded-lg">
                 <CardTitle>Upcoming Tournaments</CardTitle>
                 <CardDescription className="text-white/80">
                   Next 30 days
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent>
                 <div className="space-y-4">
                   {upcomingTournaments.map((tournament) => {
                     const daysUntil = Math.ceil(
@@ -444,13 +249,14 @@ export default async function AdminDashboard() {
                   })}
                 </div>
               </CardContent>
-              <CardFooter className="bg-slate-50 dark:bg-slate-900/50 border-t px-6 py-4">
-                <Button variant="outline" className="w-full" asChild>
-                  <Link href="/admin/tournaments">
-                    View All Tournaments
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+              <CardFooter>
+                <Link
+                  href="/dashboard/tournaments"
+                  className="flex gap-3 items-center justify-center rounded-lg outline-gray-500 py-2 outline-1 text-center w-full mt-5"
+                >
+                  View All Tournaments
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Link>
               </CardFooter>
             </Card>
           </TabsContent>
@@ -510,7 +316,7 @@ export default async function AdminDashboard() {
             </CardContent>
             <CardFooter className="pt-3">
               <Button variant="ghost" size="sm" className="w-full" asChild>
-                <Link href="/admin/matches">View All Matches</Link>
+                <Link href="/dashboard/matches">View All Matches</Link>
               </Button>
             </CardFooter>
           </Card>
@@ -552,7 +358,7 @@ export default async function AdminDashboard() {
             </CardContent>
             <CardFooter className="pt-3">
               <Button variant="ghost" size="sm" className="w-full" asChild>
-                <Link href="/admin/calendar">View Calendar</Link>
+                <Link href="/dashboard/calendar">View Calendar</Link>
               </Button>
             </CardFooter>
           </Card>
