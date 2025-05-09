@@ -11,9 +11,9 @@ import {
   PastTournament,
 } from "./placeholderData";
 
-import UpComing from "./TournamentSection/UpComing";
-import OnGoing from "./TournamentSection/OnGoing";
-import Past from "./TournamentSection/Past";
+import UpComing from "./Status/UpComing";
+import OnGoing from "./Status/OnGoing";
+import Past from "./Status/Past";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 

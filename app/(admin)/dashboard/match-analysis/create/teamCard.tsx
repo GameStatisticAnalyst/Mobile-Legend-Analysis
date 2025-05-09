@@ -20,6 +20,8 @@ import {
   ChevronDown,
   Check,
 } from "lucide-react";
+import HeroSelect from "./heroSelect";
+import RoleSelect from "./roleSelect";
 
 interface TeamCardProps {
   team: Team;
@@ -64,7 +66,11 @@ export default function TeamCard({
         "lg:col-span-2 overflow-hidden",
         darkMode
           ? `border-${team.id === "team-a" ? "blue" : "red"}-900 bg-gray-900`
-          : `border-${team.id === "team-a" ? "blue" : "red"}-200 bg-white`
+          : `border-${
+              team.id === "team-a" ? "blue" : "red"
+            }-200 bg-white dark:border-${
+              team.id === "team-a" ? "blue" : "red"
+            }-900 dark:bg-gray-900`
       )}
     >
       <CardHeader
@@ -76,10 +82,12 @@ export default function TeamCard({
               }-800`
             : `from-${team.id === "team-a" ? "blue" : "red"}-500 to-${
                 team.id === "team-a" ? "blue" : "red"
-              }-600`
+              }-600 dark:from-${
+                team.id === "team-a" ? "blue" : "red"
+              }-700 dark:to-${team.id === "team-a" ? "blue" : "red"}-800`
         )}
       >
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 px-4">
           <Avatar className="h-8 w-8 border-2 border-white">
             <AvatarImage
               src={team.logo || "/placeholder.svg"}
@@ -90,7 +98,7 @@ export default function TeamCard({
           <span>{team.name}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
+      <CardContent>
         {!isEditMode && (
           <div className="p-2 border-b dark:border-gray-800 flex flex-wrap gap-1 justify-center">
             {/* Event Tools */}
@@ -253,4 +261,3 @@ export default function TeamCard({
     </Card>
   );
 }
-

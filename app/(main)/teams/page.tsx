@@ -49,7 +49,7 @@ export default function TeamsPage():ReactElement {
             <div className="w-full lg:w-1/4 space-y-6">
               {/* Filters */}
               <Card className="border-gray-200 dark:border-gray-700 shadow-sm bg-white/90 dark:bg-gray-800/90">
-                <CardContent className="p-6">
+                <CardContent className="">
                   <div className="flex items-center justify-between mb-4 mt-4">
                     <h3 className="text-lg font-semibold">Filters</h3>
                     <Button
@@ -134,7 +134,7 @@ export default function TeamsPage():ReactElement {
 
               {/* Top Teams Stats */}
               <Card className="border-gray-200 dark:border-gray-700 shadow-sm bg-white/90 dark:bg-gray-800/90">
-                <CardContent className="p-6">
+                <CardContent className="">
                   <h3 className="text-lg font-semibold mb-4 mt-4">
                     Top Teams by Win Rate
                   </h3>
@@ -198,12 +198,12 @@ export default function TeamsPage():ReactElement {
                   </TabsList>
                 </div>
 
-                <TabsContent value="all" className="mt-0">
+                <TabsContent value="all">
                   <div className="grid md:grid-cols-2 2xl:grid-cols-3 gap-6">
                     {allTeams.map((team) => (
                       <Link href={`/teams/${team.id}`} key={team.id}>
                         <Card className="border-white/80 pt-5 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer h-full">
-                          <CardContent className="p-6">
+                          <CardContent className="">
                             <div className="flex flex-col items-center text-center mb-4">
                               <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-4 border-gray-100 dark:border-gray-800">
                                 <Image
@@ -285,11 +285,11 @@ export default function TeamsPage():ReactElement {
                 </TabsContent>
 
                 <TabsContent value="featured">
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid md:grid-cols-2 2xl:grid-cols-3 gap-6">
                     {featuredTeams.map((team) => (
                       <Link href={`/teams/${team.id}`} key={team.id}>
                         <Card className="border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer h-full">
-                          <CardContent className="p-6">
+                          <CardContent className="">
                             <div className="flex flex-col items-center text-center mb-4">
                               <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-4 border-gray-100 dark:border-gray-800">
                                 <Image
@@ -370,13 +370,13 @@ export default function TeamsPage():ReactElement {
                 </TabsContent>
 
                 <TabsContent value="sea">
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid md:grid-cols-2 2xl:grid-cols-3 gap-6">
                     {allTeams
                       .filter((team) => team.region === "SEA")
                       .map((team) => (
                         <Link href={`/teams/${team.id}`} key={team.id}>
                           <Card className="border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer h-full">
-                            <CardContent className="p-6">
+                            <CardContent className="">
                               <div className="flex flex-col items-center text-center mb-4">
                                 <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-4 border-gray-100 dark:border-gray-800">
                                   <Image
@@ -465,8 +465,7 @@ export default function TeamsPage():ReactElement {
                 </TabsContent>
 
                 <TabsContent value="international">
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* This would show international teams, but our dummy data only has SEA teams */}
+                  <div className="grid md:grid-cols-2 2xl:grid-cols-3 gap-6">
                     <div className="col-span-full text-center py-12">
                       <p className="text-gray-500 dark:text-gray-400">
                         No international teams available in the current dataset.

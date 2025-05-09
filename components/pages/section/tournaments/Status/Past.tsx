@@ -27,7 +27,7 @@ export default function Past({ title, tournaments }: PastProps): ReactElement {
             <Link href={`/tournaments/${tournament.id}`} key={tournament.id}>
               <Card className="border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-800 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer h-full">
                 <CardContent>
-                  <div className="flex items-center gap-4 mb-4 mt-4">
+                  <div className="flex items-center gap-4 mb-4">
                     <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 p-2">
                       <Image
                         src={tournament.logo || "/placeholder.svg"}

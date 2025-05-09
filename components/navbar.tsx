@@ -109,6 +109,7 @@ export default function Navbar(): JSX.Element {
           <ThemeToggle />
           <Button
             variant="default"
+            asChild
             className="hidden md:inline-flex rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
             <Link href="/account" className="text-white">
@@ -119,13 +120,13 @@ export default function Navbar(): JSX.Element {
 
         <div className="flex items-center md:hidden">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger>
+            <SheetTrigger asChild>
               <Button
                 variant="ghost"
+                leftIcon={<Menu className="h-5 w-5" />}
                 className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
               >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
+                Toggle Menu
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-full sm:w-[350px] pr-5">
@@ -142,7 +143,7 @@ export default function Navbar(): JSX.Element {
                 </Link>
                 <Button
                   variant="ghost"
-                  size="icon"
+                  // size="icon"
                   onClick={(): void => setMobileMenuOpen(false)}
                   className="rounded-full"
                 >

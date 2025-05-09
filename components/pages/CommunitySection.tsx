@@ -49,6 +49,7 @@ export default function CommunitySection() {
             <Button
               size="lg"
               variant="default"
+              // rightIcon={<ArrowRight className="h-5 w-5" />}
               className="rounded-full w-full px-8 py-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
             >
               <Link href="/contributors" className="flex items-center ">

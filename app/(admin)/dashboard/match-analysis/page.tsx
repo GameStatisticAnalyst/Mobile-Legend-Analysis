@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import Avatar from "@/components/ui/avatar";
+import {Avatar} from "@/components/ui/avatar";
 import { Search, Plus, Edit, Trash2, Eye } from "lucide-react";
 import Link from "next/link";
 import { sampleAnalyses } from "./placeholder";

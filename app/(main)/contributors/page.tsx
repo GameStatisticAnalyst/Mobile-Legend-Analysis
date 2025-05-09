@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import Avatar from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Github, Twitter, Linkedin, Globe } from "lucide-react";
 import Link from "next/link";
@@ -28,15 +28,15 @@ export default function ContributorsPage() {
           {contributors.slice(0, 3).map((contributor) => (
             <Card
               key={contributor.id}
-              className="overflow-hidden bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 border-0 shadow-md"
+              className="overflow-hidden bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 shadow-md"
             >
               <div className="p-6 text-center">
-                <Avatar
-                  className="w-32 h-32 mx-auto mb-4 border-4 border-white dark:border-gray-800 shadow-lg"
-                  src={contributor.image}
-                  alt={contributor.name}
-                  fallback={contributor.name.substring(0, 2)}
-                />
+                <Avatar className="w-32 h-32 mx-auto mb-4 border-4 border-white dark:border-gray-800 shadow-lg">
+                  <AvatarImage src={contributor.image} alt={contributor.name} />
+                  <AvatarFallback>
+                    {contributor.name.substring(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
                 <h3 className="text-2xl font-bold mb-1">{contributor.name}</h3>
                 <p className="text-purple-600 dark:text-purple-400 font-medium mb-3">
                   {contributor.role}
@@ -110,84 +110,80 @@ export default function ContributorsPage() {
               key={contributor.id}
               // className="overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <CardContent className="p-6">
-                <div className="flex flex-col items-start mt-4">
-                    <div className="flex gap-3 items-center mb-2">
-                      <Image
-                        className="w-12 h-12 rounded-full"
-                        src="/images/profile.jpg"
-                        alt={contributor.name}
-                        width={64}
-                        height={64}
-                        // fallback={contributor.name.substring(0, 2)}
-                      />
-                      <div className="flex flex-col">
-                        <h3 className="text-lg font-bold">
-                          {contributor.name}
-                        </h3>
-                        <p className="text-purple-600 dark:text-purple-400 text-sm mb-2">
-                          {contributor.role}
-                        </p>
-                      </div>
+              <CardContent>
+                <div className="flex flex-col items-start">
+                  <div className="flex gap-3 items-center mb-2">
+                    <Avatar className="w-12 h-12 rounded-full">
+                      <AvatarImage src="/images/profile.jpg" alt={contributor.name}/>
+                      <AvatarFallback>
+                        {contributor.name.substring(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <h3 className="text-lg font-bold">{contributor.name}</h3>
+                      <p className="text-purple-600 dark:text-purple-400 text-sm mb-2">
+                        {contributor.role}
+                      </p>
                     </div>
-                    {/* Bio */}
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2">
-                      {contributor.bio}
-                    </p>
-                    {/* Specialities */}
-                    <div className="flex flex-wrap gap-1 mb-2">
-                      {contributor.specialties
-                        .slice(0, 2)
-                        .map((specialty, index) => (
-                          <Badge
-                            key={index}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            {specialty}
-                          </Badge>
-                        ))}
-                      {contributor.specialties.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{contributor.specialties.length - 2}
+                  </div>
+                  {/* Bio */}
+                  <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2">
+                    {contributor.bio}
+                  </p>
+                  {/* Specialities */}
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {contributor.specialties
+                      .slice(0, 2)
+                      .map((specialty, index) => (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="text-xs"
+                        >
+                          {specialty}
                         </Badge>
-                      )}
-                    </div>
-                    {/* Media Socila */}
-                    <div className="flex space-x-2 mt-2">
-                      {contributor.social.github && (
-                        <Link
-                          href={contributor.social.github}
-                          className="text-gray-500 hover:text-purple-600 dark:hover:text-purple-400"
-                        >
-                          <Github className="w-4 h-4" />
-                        </Link>
-                      )}
-                      {contributor.social.twitter && (
-                        <Link
-                          href={contributor.social.twitter}
-                          className="text-gray-500 hover:text-purple-600 dark:hover:text-purple-400"
-                        >
-                          <Twitter className="w-4 h-4" />
-                        </Link>
-                      )}
-                      {contributor.social.linkedin && (
-                        <Link
-                          href={contributor.social.linkedin}
-                          className="text-gray-500 hover:text-purple-600 dark:hover:text-purple-400"
-                        >
-                          <Linkedin className="w-4 h-4" />
-                        </Link>
-                      )}
-                      {contributor.social.website && (
-                        <Link
-                          href={contributor.social.website}
-                          className="text-gray-500 hover:text-purple-600 dark:hover:text-purple-400"
-                        >
-                          <Globe className="w-4 h-4" />
-                        </Link>
-                      )}
-                    </div>
+                      ))}
+                    {contributor.specialties.length > 2 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{contributor.specialties.length - 2}
+                      </Badge>
+                    )}
+                  </div>
+                  {/* Media Socila */}
+                  <div className="flex space-x-2 mt-2">
+                    {contributor.social.github && (
+                      <Link
+                        href={contributor.social.github}
+                        className="text-gray-500 hover:text-purple-600 dark:hover:text-purple-400"
+                      >
+                        <Github className="w-4 h-4" />
+                      </Link>
+                    )}
+                    {contributor.social.twitter && (
+                      <Link
+                        href={contributor.social.twitter}
+                        className="text-gray-500 hover:text-purple-600 dark:hover:text-purple-400"
+                      >
+                        <Twitter className="w-4 h-4" />
+                      </Link>
+                    )}
+                    {contributor.social.linkedin && (
+                      <Link
+                        href={contributor.social.linkedin}
+                        className="text-gray-500 hover:text-purple-600 dark:hover:text-purple-400"
+                      >
+                        <Linkedin className="w-4 h-4" />
+                      </Link>
+                    )}
+                    {contributor.social.website && (
+                      <Link
+                        href={contributor.social.website}
+                        className="text-gray-500 hover:text-purple-600 dark:hover:text-purple-400"
+                      >
+                        <Globe className="w-4 h-4" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
                 <div className="mt-4 pt-4 border-t flex justify-between items-center">
                   <span className="text-sm text-gray-500 dark:text-gray-400">

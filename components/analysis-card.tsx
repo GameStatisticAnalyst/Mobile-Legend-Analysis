@@ -37,9 +37,9 @@ export default function AnalysisCard({ analysis, onClick }: AnalysisCardProps) {
       className="overflow-hidden cursor-pointer hover:shadow-lg transition-all hover:-translate-y-1 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm"
       onClick={() => onClick(analysis)}
     >
-      <CardContent className="p-6">
+      <CardContent className="">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6 py-6 w-full">
+          <div className="flex items-center gap-6 w-full">
             <div className="text-center">
               <Image
                 src={analysis.teamA.logo || "/placeholder.svg"}

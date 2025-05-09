@@ -12,9 +12,8 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions);
 
-  // Redirect unauthenticated users to login
   if (!session?.user) {
-    redirect('/account/login');
+    redirect("/account/login");
   }
 
   return (

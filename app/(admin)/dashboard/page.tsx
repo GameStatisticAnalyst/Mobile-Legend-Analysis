@@ -1,8 +1,8 @@
-"use server";
+"use client";
 
+import React, { createElement, ReactElement } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
 import AdminLayout from "@/layout/admin-layout";
 import StatCard from "@/components/dashboard/stat-card";
 import RecentActivity from "@/components/dashboard/recent-activities";
@@ -19,7 +19,7 @@ import {
   ChevronRight,
   Calendar,
   Activity,
-} from "lucide-react"
+} from "lucide-react";
 
 import {
   Card,
@@ -49,7 +49,7 @@ function getGreeting(): string {
 
 export default async function AdminDashboard() {
   // const { data: session, status } = useSession();
-  const greeting = getGreeting();
+  const greeting: string = getGreeting();
   return (
     <AdminLayout>
       <div className="p-6 max-w-7xl mx-auto">
@@ -92,15 +92,14 @@ export default async function AdminDashboard() {
             {quickActions.map((action, index) => (
               <Link href={action.href} key={index}>
                 <Card className="h-full hover:shadow-md transition-shadow border-0 shadow">
-                  <CardContent className="p-6">
+                  <CardContent>
                     <div
-                      className={`${action.color} text-white p-3 rounded-lg inline-flex mb-4 mt-4`}
+                      className={`${action.color} p-3 rounded-lg inline-flex mb-4`}
                     >
-                      {/* <action.icon className="h-4 w-4 text-blue-600"/> */}
-                      {action.icon}
+                      {action.icon && <action.icon className="h-4 w-4 " />}
                     </div>
                     <h3 className="font-medium">{action.title}</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-500">
                       {action.description}
                     </p>
                   </CardContent>
@@ -119,7 +118,7 @@ export default async function AdminDashboard() {
             </Button>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat, index) => (
+            {/* {stats.map((stat, index) => (
               <StatCard
                 key={index}
                 title={stat.title}
@@ -129,7 +128,7 @@ export default async function AdminDashboard() {
                 trend={stat.trend}
                 trendValue={stat.trendValue}
               />
-            ))}
+            ))} */}
           </div>
         </div>
 
@@ -148,15 +147,14 @@ export default async function AdminDashboard() {
 
           <TabsContent value="overview" className="mt-0">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Analytics Card */}
               <Card className="col-span-1 lg:col-span-2 overflow-hidden border-0 shadow">
-                <CardHeader className="bg-gradient-to-r from-blue-600/90 to-purple-600/90 text-white mb-8">
+                <CardHeader className="bg-gradient-to-r from-blue-600/90 to-purple-600/90 text-white mb-8 px-3 py-2 rounded-lg">
                   <CardTitle>Weekly Analytics</CardTitle>
                   <CardDescription className="text-white/80">
                     Your platform performance this week
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-6">
+                <CardContent>
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
@@ -208,13 +206,13 @@ export default async function AdminDashboard() {
 
           <TabsContent value="tournaments" className="mt-0">
             <Card className="overflow-hidden border-0 shadow">
-              <CardHeader className="bg-gradient-to-r from-amber-600/90 to-red-600/90 text-white">
+              <CardHeader className="bg-gradient-to-r from-amber-600/90 to-red-600/90 text-white px-3 py-2 rounded-lg">
                 <CardTitle>Upcoming Tournaments</CardTitle>
                 <CardDescription className="text-white/80">
                   Next 30 days
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent>
                 <div className="space-y-4">
                   {upcomingTournaments.map((tournament) => {
                     const daysUntil = Math.ceil(
@@ -251,13 +249,14 @@ export default async function AdminDashboard() {
                   })}
                 </div>
               </CardContent>
-              <CardFooter className="bg-slate-50 dark:bg-slate-900/50 border-t px-6 py-4">
-                <Button variant="outline" className="w-full" asChild>
-                  <Link href="/dashboard/tournaments">
-                    View All Tournaments
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+              <CardFooter>
+                <Link
+                  href="/dashboard/tournaments"
+                  className="flex gap-3 items-center justify-center rounded-lg outline-gray-500 py-2 outline-1 text-center w-full mt-5"
+                >
+                  View All Tournaments
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Link>
               </CardFooter>
             </Card>
           </TabsContent>

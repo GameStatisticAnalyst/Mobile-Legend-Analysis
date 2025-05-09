@@ -26,29 +26,29 @@ export default function RootLayout({
   withGradient = true,
   withAnimation = true,
 }: MainLayoutProps): ReactElement {
-  // useEffect(() => {
-  //   if (typeof window !== "undefined" && withAnimation) {
-  //     anime({
-  //       targets: ".animate-fade-in",
-  //       opacity: [0, 1],
-  //       translateY: [20, 0],
-  //       delay: anime.stagger(100, { start: 300 }),
-  //       easing: "easeOutExpo",
-  //       duration: 800,
-  //     });
+  useEffect(() => {
+    if (typeof window !== "undefined" && withAnimation) {
+      anime({
+        targets: ".animate-fade-in",
+        opacity: [0, 1],
+        translateY: [20, 0],
+        delay: anime.stagger(100, { start: 300 }),
+        easing: "easeOutExpo",
+        duration: 800,
+      });
 
-  //     if (withGradient) {
-  //       anime({
-  //         targets: ".gradient-bg",
-  //         backgroundPosition: ["0% 0%", "100% 100%"],
-  //         easing: "easeInOutQuad",
-  //         duration: 10000,
-  //         loop: true,
-  //         direction: "alternate",
-  //       });
-  //     }
-  //   }
-  // }, [withAnimation, withGradient]);
+      if (withGradient) {
+        anime({
+          targets: ".gradient-bg",
+          backgroundPosition: ["0% 0%", "100% 100%"],
+          easing: "easeInOutQuad",
+          duration: 10000,
+          loop: true,
+          direction: "alternate",
+        });
+      }
+    }
+  }, [withAnimation, withGradient]);
 
   useEffect(() => {
     document.documentElement.className = inter.className;
@@ -58,7 +58,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} relative scroll-smooth`}>
         <ThemeProvider attribute={"class"} defaultTheme="system">
-          {/* {withGradient && (
+          {withGradient && (
             <>
               <div
                 className="gradient-bg fixed inset-0 bg-gradient-to-br from-blue-600/5 via-purple-600/5 to-pink-600/5 bg-[length:200%_200%] -z-10"
@@ -71,7 +71,7 @@ export default function RootLayout({
                 <div className="absolute bottom-[10%] left-[35%] w-80 h-80 rounded-full bg-pink-500/5 animate-blob animation-delay-4000" />
               </div>
             </>
-          )} */}
+          )}
           <Navbar />
           <main className="container mx-auto py-12 max-w-9xl px-4">
             {children}

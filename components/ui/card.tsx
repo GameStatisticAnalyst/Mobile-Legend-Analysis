@@ -62,7 +62,7 @@ export function CardContent({ className = "", ...props }: CardProps) {
 export function CardFooter({ className = "", ...props }: CardProps) {
   return (
     <div
-      className={cn("flex items-center p-6 pt-0", className)}
+      className={cn("flex items-center pt-0", className)}
       {...props}
     />
   );

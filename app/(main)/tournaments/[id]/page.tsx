@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { getTournamentData } from "./placeholder";
+import Header from "@/components/pages/section/tournaments/SectionPage/Header";
 
 export default function TournamentDetail({
   params,
@@ -17,45 +18,7 @@ export default function TournamentDetail({
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="space-y-8">
-        {/* Tournament Header */}
-        <div className="flex flex-col items-center gap-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 p-6 rounded-xl">
-          <div className="relative w-32 h-32">
-            <Image
-              src={tournament.logo || "/placeholder.svg"}
-              alt={tournament.name}
-              fill
-              className="rounded-full object-cover"
-            />
-          </div>
-
-          <div className="text-center space-y-4 w-full max-w-3xl">
-            <h1 className="text-3xl font-bold">{tournament.name}</h1>
-
-            <div className="flex flex-wrap justify-center gap-4">
-              <Badge variant="secondary">{tournament.location}</Badge>
-              <Badge variant="secondary">
-                {tournament.startDate} to {tournament.endDate}
-              </Badge>
-              <Badge variant="secondary">
-                Prize Pool: {tournament.prizePool}
-              </Badge>
-            </div>
-
-            <p className="text-gray-600 dark:text-gray-300">
-              {tournament.description}
-            </p>
-
-            {tournament.status === "completed" && (
-              <div className="mt-4">
-                <Badge className="bg-purple-600 hover:bg-purple-700">
-                  Winner: {tournament.winner}
-                </Badge>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Tournament Info */}
+        <Header tournament={tournament} />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
