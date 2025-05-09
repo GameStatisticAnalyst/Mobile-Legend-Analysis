@@ -11,6 +11,8 @@ import {
 import { Check, ChevronDown } from "lucide-react";
 
 import type { Team, Player, GameEvent, Hero } from "@/types/match-analysis";
+import { roles } from "../placeholder";
+import cn from "@/utils/cn";
 
 import {
   Popover,

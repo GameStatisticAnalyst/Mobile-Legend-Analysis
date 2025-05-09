@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useRef, useEffect  , useReducer } from "react";
+import { useState, useRef, useEffect, useReducer } from "react";
 import Button from "@/components/ui/button";
 import TeamCard from "./teamCard";
 import TeamStatusCard from "./tableCard";
@@ -44,6 +44,8 @@ import Slider from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import cn from "@/utils/cn";
 import type { Team, Player, GameEvent, Hero } from "@/types/match-analysis";
+import { DndContext } from "@dnd-kit/core";
+import { Draggable, Droppable } from "@/utils/dnd";
 
 const initialMatchInfo = {
   competitionId: "",
@@ -79,6 +81,10 @@ export default function MatchAnalysisPage() {
     initialMatchInfo
   );
 
+  const [teamsA, setTeamsA] = useState({ id: "teamA", name: "Team A" });
+  const [teamsB, setTeamsB] = useState({ id: "teamB", name: "Team B" });
+  const [videos, setVideos] = useState({ id: "video", name: "Video" });
+
   const [teamA, setTeamA] = useState<Team>(initialTeamA);
   const [teamB, setTeamB] = useState<Team>(initialTeamB);
   const [events, setEvents] = useState<GameEvent[]>([]);
@@ -99,6 +105,41 @@ export default function MatchAnalysisPage() {
 
   const mapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLIFrameElement>(null);
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      // Swap logic
+      if (active.id === "teamA" && over.id === "teamB") {
+        const temp = teamA;
+        setTeamsA(teamB);
+        setTeamsB(temp);
+      } else if (active.id === "teamB" && over.id === "teamA") {
+        const temp = teamB;
+        setTeamsB(teamA);
+        setTeamsA(temp);
+      } else if (active.id === "teamA" && over.id === "video") {
+        const temp = teamA;
+        setTeamsA(videos);
+        setVideos(temp);
+      } else if (active.id === "teamB" && over.id === "video") {
+        const temp = teamB;
+        setTeamsB(videos);
+        setVideos(temp);
+      } else if (active.id === "video" && over.id === "teamA") {
+        const temp = videos;
+        setVideos(teamA);
+        setTeamsA(temp);
+      } else if (active.id === "video" && over.id === "teamB") {
+        const temp = videos;
+        setVideos(teamB);
+        setTeamsB(temp);
+      }
+
+      console.log(`Swapped ${active.id} with ${over.id}`);
+    }
+  };
 
   const handlePlayerSelect = (player: Player) => {
     if (isEditMode) {
@@ -442,190 +483,204 @@ export default function MatchAnalysisPage() {
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
             <TabsContent value="analysis" className="mt-6 space-y-6 ">
-              <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
-                <TeamCard
-                  team={teamA}
-                  darkMode={darkMode}
-                  isEditMode={isEditMode}
-                  selectedPlayer={selectedPlayer}
-                  targetPlayer={targetPlayer}
-                  selectedEventType={selectedEventType}
-                  eventTypes={eventTypes}
-                  handlePlayerSelect={handlePlayerSelect}
-                  handleEventTypeSelect={handleEventTypeSelect}
-                  handleTargetPlayerSelect={handleTargetPlayerSelect}
-                  updatePlayerHero={updatePlayerHero}
-                  updateRole={(player, role) => {
-                    const updatedHero = { ...player.hero, role };
-                    updatePlayerHero(player, updatedHero);
-                  }}
-                  editingPlayer={editingPlayer}
-                  editingName={editingName}
-                  setEditingName={setEditingName}
-                  savePlayerEdit={savePlayerEdit}
-                />
-                {/* Video */}
-                <Card
-                  className={cn(
-                    "lg:col-span-3",
-                    darkMode ? "bg-gray-900 border-gray-800" : "bg-white"
-                  )}
-                >
-                  <CardContent className="p-4 flex flex-col items-center">
-                    <div className="w-full aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden mb-4">
-                      {videoUrl ? (
-                        <iframe
-                          ref={videoRef}
-                          src={getYouTubeEmbedUrl(videoUrl)}
-                          className="w-full h-full"
-                          allowFullScreen
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        ></iframe>
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className="gap-2 rounded-full"
-                              >
-                                <Settings className="h-4 w-4" />
-                                Add Video Source
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent
-                              className={
-                                darkMode ? "bg-gray-900 border-gray-800" : ""
-                              }
-                            >
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Video Settings
-                                </AlertDialogTitle>
-                              </AlertDialogHeader>
-                              <div className="space-y-4 py-4">
-                                <div className="space-y-2">
-                                  <Label htmlFor="video-url">
-                                    YouTube Video URL
-                                  </Label>
-                                  <Input
-                                    id="video-url"
-                                    placeholder="https://www.youtube.com/watch?v=..."
-                                    value={videoUrl}
-                                    onChange={(e) =>
-                                      setVideoUrl(e.target.value)
-                                    }
-                                    className={
-                                      darkMode
-                                        ? "bg-gray-800 border-gray-700"
-                                        : ""
-                                    }
-                                  />
-                                </div>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel
-                                    className={
-                                      darkMode
-                                        ? "bg-gray-800 hover:bg-gray-700"
-                                        : ""
-                                    }
-                                  >
-                                    Cancel
-                                  </AlertDialogCancel>
-                                  <AlertDialogAction
-                                    className={cn(
-                                      "rounded-full",
-                                      darkMode
-                                        ? "bg-gradient-to-r from-blue-500 to-purple-500"
-                                        : "bg-gradient-to-r from-blue-600 to-purple-600"
-                                    )}
-                                    onClick={() => handleVideoUpdate(videoUrl)}
-                                  >
-                                    Apply Settings
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </div>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
+              <DndContext>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <Draggable id="teamA">
+                    <TeamCard
+                      team={teamA}
+                      darkMode={darkMode}
+                      isEditMode={isEditMode}
+                      selectedPlayer={selectedPlayer}
+                      targetPlayer={targetPlayer}
+                      selectedEventType={selectedEventType}
+                      eventTypes={eventTypes}
+                      handlePlayerSelect={handlePlayerSelect}
+                      handleEventTypeSelect={handleEventTypeSelect}
+                      handleTargetPlayerSelect={handleTargetPlayerSelect}
+                      updatePlayerHero={updatePlayerHero}
+                      updateRole={(player, role) => {
+                        const updatedHero = { ...player.hero, role };
+                        updatePlayerHero(player, updatedHero);
+                      }}
+                      editingPlayer={editingPlayer}
+                      editingName={editingName}
+                      setEditingName={setEditingName}
+                      savePlayerEdit={savePlayerEdit}
+                    />
+                  </Draggable>
+
+                  {/* Red Team */}
+                  <Draggable id="teamB">
+                    <TeamCard
+                      team={teamB}
+                      darkMode={darkMode}
+                      isEditMode={isEditMode}
+                      selectedPlayer={selectedPlayer}
+                      targetPlayer={targetPlayer}
+                      selectedEventType={selectedEventType}
+                      eventTypes={eventTypes}
+                      handlePlayerSelect={handlePlayerSelect}
+                      handleEventTypeSelect={handleEventTypeSelect}
+                      handleTargetPlayerSelect={handleTargetPlayerSelect}
+                      updatePlayerHero={updatePlayerHero}
+                      updateRole={(player, role) => {
+                        const updatedHero = { ...player.hero, role };
+                        updatePlayerHero(player, updatedHero);
+                      }}
+                      editingPlayer={editingPlayer}
+                      editingName={editingName}
+                      setEditingName={setEditingName}
+                      savePlayerEdit={savePlayerEdit}
+                    />
+                  </Draggable>
+
+                  {/* Video */}
+                  <Draggable id="video">
+                    <Card
+                      className={cn(
+                        "lg:col-span-3",
+                        darkMode ? "bg-gray-900 border-gray-800" : "bg-white"
                       )}
-                    </div>
-
-                    <div className="w-full mb-2">
-                      <Slider
-                        value={[videoProgress]}
-                        max={100}
-                        step={0.1}
-                        className={darkMode ? "bg-gray-800" : ""}
-                        onValueChange={(value) => {
-                          setVideoProgress(value[0]);
-                          setCurrentTime((value[0] / 100) * 300);
-                        }}
-                      />
-                    </div>
-
-                    <div className="w-full flex flex-col items-center gap-2">
-                      <div className="text-2xl font-mono">
-                        {formatTime(currentTime)}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="rounded-full"
-                        >
-                          <SkipBack className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          className={cn(
-                            "rounded-full",
-                            darkMode
-                              ? "bg-gradient-to-r from-blue-500 to-purple-500"
-                              : "bg-gradient-to-r from-blue-600 to-purple-600"
-                          )}
-                          size="icon"
-                          onClick={() => setIsPlaying(!isPlaying)}
-                        >
-                          {isPlaying ? (
-                            <Pause className="h-4 w-4" />
+                    >
+                      <CardContent className="p-4 flex flex-col items-center">
+                        <div className="w-full aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden mb-4">
+                          {videoUrl ? (
+                            <iframe
+                              ref={videoRef}
+                              src={getYouTubeEmbedUrl(videoUrl)}
+                              className="w-full h-full"
+                              allowFullScreen
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            ></iframe>
                           ) : (
-                            <Play className="h-4 w-4" />
+                            <div className="w-full h-full flex items-center justify-center">
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className="gap-2 rounded-full"
+                                  >
+                                    <Settings className="h-4 w-4" />
+                                    Add Video Source
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent
+                                  className={
+                                    darkMode
+                                      ? "bg-gray-900 border-gray-800"
+                                      : ""
+                                  }
+                                >
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Video Settings
+                                    </AlertDialogTitle>
+                                  </AlertDialogHeader>
+                                  <div className="space-y-4 py-4">
+                                    <div className="space-y-2">
+                                      <Label htmlFor="video-url">
+                                        YouTube Video URL
+                                      </Label>
+                                      <Input
+                                        id="video-url"
+                                        placeholder="https://www.youtube.com/watch?v=..."
+                                        value={videoUrl}
+                                        onChange={(e) =>
+                                          setVideoUrl(e.target.value)
+                                        }
+                                        className={
+                                          darkMode
+                                            ? "bg-gray-800 border-gray-700"
+                                            : ""
+                                        }
+                                      />
+                                    </div>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel
+                                        className={
+                                          darkMode
+                                            ? "bg-gray-800 hover:bg-gray-700"
+                                            : ""
+                                        }
+                                      >
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        className={cn(
+                                          "rounded-full",
+                                          darkMode
+                                            ? "bg-gradient-to-r from-blue-500 to-purple-500"
+                                            : "bg-gradient-to-r from-blue-600 to-purple-600"
+                                        )}
+                                        onClick={() =>
+                                          handleVideoUpdate(videoUrl)
+                                        }
+                                      >
+                                        Apply Settings
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </div>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           )}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="rounded-full"
-                        >
-                          <SkipForward className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                {/* Red Team */}
-                <TeamCard
-                  team={teamB}
-                  darkMode={darkMode}
-                  isEditMode={isEditMode}
-                  selectedPlayer={selectedPlayer}
-                  targetPlayer={targetPlayer}
-                  selectedEventType={selectedEventType}
-                  eventTypes={eventTypes}
-                  handlePlayerSelect={handlePlayerSelect}
-                  handleEventTypeSelect={handleEventTypeSelect}
-                  handleTargetPlayerSelect={handleTargetPlayerSelect}
-                  updatePlayerHero={updatePlayerHero}
-                  updateRole={(player, role) => {
-                    const updatedHero = { ...player.hero, role };
-                    updatePlayerHero(player, updatedHero);
-                  }}
-                  editingPlayer={editingPlayer}
-                  editingName={editingName}
-                  setEditingName={setEditingName}
-                  savePlayerEdit={savePlayerEdit}
-                />
-              </div>
+                        </div>
+
+                        <div className="w-full mb-2">
+                          <Slider
+                            value={[videoProgress]}
+                            max={100}
+                            step={0.1}
+                            className={darkMode ? "bg-gray-800" : ""}
+                            onValueChange={(value) => {
+                              setVideoProgress(value[0]);
+                              setCurrentTime((value[0] / 100) * 300);
+                            }}
+                          />
+                        </div>
+
+                        <div className="w-full flex flex-col items-center gap-2">
+                          <div className="text-2xl font-mono">
+                            {formatTime(currentTime)}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="rounded-full"
+                            >
+                              <SkipBack className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              className={cn(
+                                "rounded-full",
+                                darkMode
+                                  ? "bg-gradient-to-r from-blue-500 to-purple-500"
+                                  : "bg-gradient-to-r from-blue-600 to-purple-600"
+                              )}
+                              size="icon"
+                              onClick={() => setIsPlaying(!isPlaying)}
+                            >
+                              {isPlaying ? (
+                                <Pause className="h-4 w-4" />
+                              ) : (
+                                <Play className="h-4 w-4" />
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="rounded-full"
+                            >
+                              <SkipForward className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Draggable>
+                </div>
+              </DndContext>
 
               <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
                 <TeamStatusCard
@@ -725,8 +780,8 @@ export default function MatchAnalysisPage() {
                 <CardHeader>
                   <CardTitle>Match Settings</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4 p-4">
-                  <div className="space-y-2">
+                <CardContent className="space-y-4">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="match-title">Match Title</Label>
                     <Input
                       id="title"
@@ -736,16 +791,17 @@ export default function MatchAnalysisPage() {
                       className={darkMode ? "bg-gray-800 border-gray-700" : ""}
                     />
                   </div>
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="match-date">Match Date</Label>
                     <Input
                       id="matchDate"
+                      type="date"
                       value={matchInfo.matchDate || ""}
                       onChange={(e) => handleMatchSettings(e)}
                       className={darkMode ? "bg-gray-800 border-gray-700" : ""}
                     />
                   </div>
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="tournament">Tournament</Label>
                     <Input
                       id="tournament"
@@ -755,7 +811,7 @@ export default function MatchAnalysisPage() {
                       className={darkMode ? "bg-gray-800 border-gray-700" : ""}
                     />
                   </div>
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="tags">Tags</Label>
                     <Input
                       id="tags"

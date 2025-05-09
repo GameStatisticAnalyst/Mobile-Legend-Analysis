@@ -4,12 +4,13 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandList, Command
 import { Check, ChevronDown } from "lucide-react";
 
 import type { Team, Player, GameEvent, Hero } from "@/types/match-analysis";
-
+import { sampleHeroes } from "../placeholder";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import cn from "@/utils/cn";
 
 export default function HeroSelect({
   player,
